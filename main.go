@@ -2,10 +2,28 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
+	"time"
+
+	cfgreader "github.com/jianhan/pkg/configs"
+	micro "github.com/micro/go-micro"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	fmt.Println("RUNNING")
-	log.Print("test")
+	serviceConfigs, err := cfgreader.NewReader(os.Getenv("ENV")).Read()
+	if err != nil {
+		panic(fmt.Sprintf("error while reading configurations: %s", err.Error()))
+	}
+	srv := micro.NewService(
+		micro.Name(serviceConfigs.Name),
+		micro.RegisterTTL(time.Duration(serviceConfigs.RegisterTTL)*time.Second),
+		micro.RegisterInterval(time.Duration(serviceConfigs.RegisterInterval)*10),
+		micro.Version(serviceConfigs.Version),
+		micro.Metadata(serviceConfigs.Metadata),
+	)
+	srv.Init()
+	if err := srv.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
