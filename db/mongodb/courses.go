@@ -4,8 +4,8 @@ import (
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	"github.com/spf13/viper"
-	"github.com/y0ssar1an/q"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const collection = "courses"
@@ -42,7 +42,6 @@ func NewMongodbCourses(session *mgo.Session) db.Courses {
 }
 
 func (c *Courses) InsertCourses(cs *pcourse.CourseSlice) error {
-	q.Q()
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range cs.Courses {
 		bulk.Insert(v)
@@ -52,4 +51,16 @@ func (c *Courses) InsertCourses(cs *pcourse.CourseSlice) error {
 		return err
 	}
 	return nil
+}
+
+func (c *Courses) UpdateCourses(cs *pcourse.CourseSlice) (modified int, err error) {
+	bulk := c.session.DB(c.db).C(c.collection).Bulk()
+	for _, v := range cs.Courses {
+		bulk.Update(bson.M{"_id": v.ID}, v)
+	}
+	r, err := bulk.Run()
+	if err != nil {
+		return
+	}
+	return r.Modified, nil
 }

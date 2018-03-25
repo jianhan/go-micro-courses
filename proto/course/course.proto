@@ -10,6 +10,11 @@ import "google/protobuf/empty.proto";
 // Service declares all RPC calls for courses related functions.
 service Courses {
 	rpc InsertCourses(CourseSlice) returns (google.protobuf.Empty);
+	rpc UpdateCourses(CourseSlice) returns (UpdateCoursesRsp);
+}
+
+message UpdateCoursesRsp {
+    int64 updated = 1;
 }
 
 message CourseSlice {
@@ -18,9 +23,9 @@ message CourseSlice {
 
 // Course defines data structure of Course.
 message Course {
-  // @inject_tag: bson:"_id"
+    // @inject_tag: bson:"_id"
 	string ID = 1;
-  // @inject_tag: bson:"name"
+    // @inject_tag: bson:"name"
 	string name = 2;
 	string slug = 3;
 	// @inject_tag: bson:"display_order"
@@ -36,3 +41,4 @@ message Course {
 	// @inject_tag: bson:"category_ids"
 	repeated string category_ids = 11;
 }
+

@@ -6,4 +6,5 @@ import (
 
 type Courses interface {
 	InsertCourses(courses *pcourse.CourseSlice) error
+	UpdateCourses(courses *pcourse.CourseSlice) (int,error)
 }
