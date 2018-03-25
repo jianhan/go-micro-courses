@@ -38,7 +38,7 @@ func main() {
 	pcourse.RegisterCoursesHandler(
 		srv.Server(),
 		&handler.Courses{
-			DB: mongodb.NewMongodbCourses(session, "cms", "courses"),
+			DB: mongodb.NewMongodbCourses(session),
 		},
 	)
 	if err := srv.Run(); err != nil {

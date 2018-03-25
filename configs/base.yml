@@ -6,3 +6,6 @@ service:
   metadata:
     description: Simple course managment micro service
 enable_debug: true
+mongodb:
+  host: localhost
+  db: cms
