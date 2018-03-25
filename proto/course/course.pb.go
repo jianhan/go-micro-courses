@@ -66,8 +66,10 @@ type Course struct {
 	Visible      bool                       `protobuf:"varint,6,opt,name=visible" json:"visible,omitempty"`
 	Start        *google_protobuf.Timestamp `protobuf:"bytes,7,opt,name=start" json:"start,omitempty"`
 	End          *google_protobuf.Timestamp `protobuf:"bytes,8,opt,name=end" json:"end,omitempty"`
-	CreatedAt    *google_protobuf.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt" json:"created_at,omitempty"`
-	UpdatedAt    *google_protobuf.Timestamp `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt" json:"updated_at,omitempty"`
+	// @inject_tag: bson:"created_at"
+	CreatedAt *google_protobuf.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt" json:"created_at,omitempty" bson:"created_at"`
+	// @inject_tag: bson:"updated_at"
+	UpdatedAt *google_protobuf.Timestamp `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt" json:"updated_at,omitempty" bson:"updated_at"`
 	// @inject_tag: bson:"category_ids"
 	CategoryIds []string `protobuf:"bytes,11,rep,name=category_ids,json=categoryIds" json:"category_ids,omitempty" bson:"category_ids"`
 }

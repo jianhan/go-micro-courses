@@ -29,7 +29,9 @@ message Course {
 	bool visible = 6;
 	google.protobuf.Timestamp start = 7;
 	google.protobuf.Timestamp end = 8;
+	// @inject_tag: bson:"created_at"
 	google.protobuf.Timestamp created_at = 9;
+	// @inject_tag: bson:"updated_at"
 	google.protobuf.Timestamp updated_at = 10;
 	// @inject_tag: bson:"category_ids"
 	repeated string category_ids = 11;
