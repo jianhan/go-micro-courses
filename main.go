@@ -15,7 +15,6 @@ import (
 )
 
 func main() {
-
 	session, err := mgo.Dial("localhost")
 	if err != nil {
 		panic(err)

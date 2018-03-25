@@ -20,9 +20,11 @@ func NewMongodbCourses(session *mgo.Session, db, collection string) db.Courses {
 	}
 }
 
-func (c *Courses) InsertCourses(courses *pcourse.CourseSlice) error {
+func (c *Courses) InsertCourses(cs *pcourse.CourseSlice) error {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
-	bulk.Insert(courses)
+	for _, v := range cs.Courses {
+		bulk.Insert(v)
+	}
 	if _, err := bulk.Run(); err != nil {
 		return err
 	}
