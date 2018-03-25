@@ -17,12 +17,20 @@ type Courses struct {
 }
 
 func NewMongodbCourses(session *mgo.Session) db.Courses {
-	index := mgo.Index{
+	nameIndex := mgo.Index{
 		Key:    []string{"name"},
 		Unique: true,
 	}
+	slugIndex := mgo.Index{
+		Key:    []string{"slug"},
+		Unique: true,
+	}
 	c := session.DB(viper.GetString("mongodb.db")).C(collection)
-	err := c.EnsureIndex(index)
+	err := c.EnsureIndex(nameIndex)
+	if err != nil {
+		panic(err)
+	}
+	err = c.EnsureIndex(slugIndex)
 	if err != nil {
 		panic(err)
 	}

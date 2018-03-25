@@ -26,7 +26,7 @@ message Course {
 	// @inject_tag: bson:"display_order"
 	uint64 display_order = 4;
 	string description = 5;
-	bool visible = 6;
+	bool hidden = 6;
 	google.protobuf.Timestamp start = 7;
 	google.protobuf.Timestamp end = 8;
 	// @inject_tag: bson:"created_at"
