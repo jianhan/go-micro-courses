@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package go.micro.srv.courses;
+option go_package="course";
+
+import "google/protobuf/timestamp.proto";
+import "github.com/jianhan/pkg/proto/mysql/mysql.proto";
+import "google/protobuf/empty.proto";
+
+// Service declares all RPC calls for courses related functions.
+service Courses {
+	rpc InsertCourses(CourseSlice) returns (google.protobuf.Empty);
+}
+
+message CourseSlice {
+	repeated Course courses = 1;
+}
+
+// Course defines data structure of Course.
+message Course {
+  // @inject_tag: bson:"_id"
+	string ID = 1;
+  // @inject_tag: bson:"name"
+	string name = 2;
+	string slug = 3;
+	// @inject_tag: bson:"display_order"
+	uint64 display_order = 4;
+	string description = 5;
+	bool visible = 6;
+	google.protobuf.Timestamp start = 7;
+	google.protobuf.Timestamp end = 8;
+	google.protobuf.Timestamp created_at = 9;
+	google.protobuf.Timestamp updated_at = 10;
+	// @inject_tag: bson:"category_ids"
+	repeated string category_ids = 11;
+}
