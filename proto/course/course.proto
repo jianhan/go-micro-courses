@@ -11,6 +11,7 @@ import "google/protobuf/empty.proto";
 service Courses {
 	rpc InsertCourses(CourseSlice) returns (google.protobuf.Empty);
 	rpc UpdateCourses(CourseSlice) returns (UpdateCoursesRsp);
+    rpc FindCourses(FindCoursesRequest) returns (CourseSlice);
 }
 
 message UpdateCoursesRsp {
@@ -19,6 +20,15 @@ message UpdateCoursesRsp {
 
 message CourseSlice {
 	repeated Course courses = 1;
+}
+
+message FindCoursesRequest {
+    repeated string ids = 1;
+    string query = 2;
+    google.protobuf.Timestamp start = 3;
+    google.protobuf.Timestamp end = 4;
+    bool inclusive = 5;
+    bool hidden = 6;
 }
 
 // Course defines data structure of Course.
