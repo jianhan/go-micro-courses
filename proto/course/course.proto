@@ -40,9 +40,12 @@ message Course {
 	string slug = 3;
 	// @inject_tag: bson:"display_order"
 	uint64 display_order = 4;
+    // @inject_tag: valid:"required~Description is required"
 	string description = 5;
 	bool hidden = 6;
+    // @inject_tag: valid:"required~Start date time is required"
 	google.protobuf.Timestamp start = 7;
+    // @inject_tag: valid:"required~End date time is required"
 	google.protobuf.Timestamp end = 8;
 	// @inject_tag: bson:"created_at"
 	google.protobuf.Timestamp created_at = 9;

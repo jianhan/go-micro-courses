@@ -30,7 +30,6 @@ func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, r
 }
 
 func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *pcourse.UpdateCoursesRsp) (err error) {
-
 	updated, err := c.DB.UpdateCourses(req)
 	if err != nil {
 		return err

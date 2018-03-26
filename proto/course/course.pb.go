@@ -135,11 +135,14 @@ type Course struct {
 	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty" bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"`
 	Slug string `protobuf:"bytes,3,opt,name=slug" json:"slug,omitempty"`
 	// @inject_tag: bson:"display_order"
-	DisplayOrder uint64                     `protobuf:"varint,4,opt,name=display_order,json=displayOrder" json:"display_order,omitempty" bson:"display_order"`
-	Description  string                     `protobuf:"bytes,5,opt,name=description" json:"description,omitempty"`
-	Hidden       bool                       `protobuf:"varint,6,opt,name=hidden" json:"hidden,omitempty"`
-	Start        *google_protobuf.Timestamp `protobuf:"bytes,7,opt,name=start" json:"start,omitempty"`
-	End          *google_protobuf.Timestamp `protobuf:"bytes,8,opt,name=end" json:"end,omitempty"`
+	DisplayOrder uint64 `protobuf:"varint,4,opt,name=display_order,json=displayOrder" json:"display_order,omitempty" bson:"display_order"`
+	// @inject_tag: valid:"required~Description is required"
+	Description string `protobuf:"bytes,5,opt,name=description" json:"description,omitempty" valid:"required~Description is required"`
+	Hidden      bool   `protobuf:"varint,6,opt,name=hidden" json:"hidden,omitempty"`
+	// @inject_tag: valid:"required~Start date time is required"
+	Start *google_protobuf.Timestamp `protobuf:"bytes,7,opt,name=start" json:"start,omitempty" valid:"required~Start date time is required"`
+	// @inject_tag: valid:"required~End date time is required"
+	End *google_protobuf.Timestamp `protobuf:"bytes,8,opt,name=end" json:"end,omitempty" valid:"required~End date time is required"`
 	// @inject_tag: bson:"created_at"
 	CreatedAt *google_protobuf.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt" json:"created_at,omitempty" bson:"created_at"`
 	// @inject_tag: bson:"updated_at"
