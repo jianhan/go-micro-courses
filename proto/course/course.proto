@@ -33,9 +33,9 @@ message FindCoursesRequest {
 
 // Course defines data structure of Course.
 message Course {
-    // @inject_tag: bson:"_id"
+    // @inject_tag: bson:"_id" valid:"uuid,required~ID is required"
 	string ID = 1;
-    // @inject_tag: bson:"name"
+    // @inject_tag: bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"
 	string name = 2;
 	string slug = 3;
 	// @inject_tag: bson:"display_order"

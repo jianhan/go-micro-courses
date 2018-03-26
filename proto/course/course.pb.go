@@ -129,10 +129,10 @@ func (m *FindCoursesRequest) GetHidden() bool {
 
 // Course defines data structure of Course.
 type Course struct {
-	// @inject_tag: bson:"_id"
-	ID string `protobuf:"bytes,1,opt,name=ID" json:"ID,omitempty" bson:"_id"`
-	// @inject_tag: bson:"name"
-	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty" bson:"name"`
+	// @inject_tag: bson:"_id" valid:"uuid,required~ID is required"
+	ID string `protobuf:"bytes,1,opt,name=ID" json:"ID,omitempty" bson:"_id" valid:"uuid,required~ID is required"`
+	// @inject_tag: bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"
+	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty" bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"`
 	Slug string `protobuf:"bytes,3,opt,name=slug" json:"slug,omitempty"`
 	// @inject_tag: bson:"display_order"
 	DisplayOrder uint64                     `protobuf:"varint,4,opt,name=display_order,json=displayOrder" json:"display_order,omitempty" bson:"display_order"`
