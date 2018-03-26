@@ -64,3 +64,15 @@ func (c *Courses) UpdateCourses(cs *pcourse.CourseSlice) (modified int, err erro
 	}
 	return r.Modified, nil
 }
+
+func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseSlice, error) {
+	var query bson.M
+	var r []*pcourse.Course
+	if len(req.Ids) > 0 {
+		query["_id"] = bson.M{"$in": req.Ids}
+	}
+	if err := c.session.DB(c.db).C(c.collection).Find(query).All(&r); err != nil {
+		return nil, err
+	}
+	return &pcourse.CourseSlice{Courses: r}, nil
+}
