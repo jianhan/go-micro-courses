@@ -20,13 +20,7 @@ import fmt "fmt"
 import math "math"
 import google_protobuf "github.com/golang/protobuf/ptypes/timestamp"
 import _ "github.com/jianhan/pkg/proto/mysql"
-import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
-
-import (
-	client "github.com/micro/go-micro/client"
-	server "github.com/micro/go-micro/server"
-	context "golang.org/x/net/context"
-)
+import _ "github.com/golang/protobuf/ptypes/empty"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -154,26 +148,26 @@ func (m *FindCoursesRequest) GetCurrentPage() int64 {
 // Course defines data structure of Course.
 type Course struct {
 	// @inject_tag: bson:"_id" valid:"uuid,required~ID is required"
-	ID string `protobuf:"bytes,1,opt,name=ID" json:"ID,omitempty" bson:"_id" valid:"uuid,required~ID is required"`
+	ID string `protobuf:"bytes,1,opt,name=ID" json:"ID,omitempty" bson:"_id" valid:"uuid,required~ID is required" bson:"_id" valid:"uuid,required~ID is required"`
 	// @inject_tag: bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"
-	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty" bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"`
+	Name string `protobuf:"bytes,2,opt,name=name" json:"name,omitempty" bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters" bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"`
 	// @inject_tag: valid:"required~Slug is required"
-	Slug string `protobuf:"bytes,3,opt,name=slug" json:"slug,omitempty" valid:"required~Slug is required"`
+	Slug string `protobuf:"bytes,3,opt,name=slug" json:"slug,omitempty" valid:"required~Slug is required" valid:"required~Slug is required"`
 	// @inject_tag: bson:"display_order"
-	DisplayOrder uint64 `protobuf:"varint,4,opt,name=display_order,json=displayOrder" json:"display_order,omitempty" bson:"display_order"`
+	DisplayOrder uint64 `protobuf:"varint,4,opt,name=display_order,json=displayOrder" json:"display_order,omitempty" bson:"display_order" bson:"display_order"`
 	// @inject_tag: valid:"required~Description is required"
-	Description string `protobuf:"bytes,5,opt,name=description" json:"description,omitempty" valid:"required~Description is required"`
+	Description string `protobuf:"bytes,5,opt,name=description" json:"description,omitempty" valid:"required~Description is required" valid:"required~Description is required"`
 	Hidden      bool   `protobuf:"varint,6,opt,name=hidden" json:"hidden,omitempty"`
 	// @inject_tag: valid:"required~Start date time is required"
-	Start *google_protobuf.Timestamp `protobuf:"bytes,7,opt,name=start" json:"start,omitempty" valid:"required~Start date time is required"`
+	Start *google_protobuf.Timestamp `protobuf:"bytes,7,opt,name=start" json:"start,omitempty" valid:"required~Start date time is required" valid:"required~Start date time is required"`
 	// @inject_tag: valid:"required~End date time is required"
-	End *google_protobuf.Timestamp `protobuf:"bytes,8,opt,name=end" json:"end,omitempty" valid:"required~End date time is required"`
+	End *google_protobuf.Timestamp `protobuf:"bytes,8,opt,name=end" json:"end,omitempty" valid:"required~End date time is required" valid:"required~End date time is required"`
 	// @inject_tag: bson:"created_at"
-	CreatedAt *google_protobuf.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt" json:"created_at,omitempty" bson:"created_at"`
+	CreatedAt *google_protobuf.Timestamp `protobuf:"bytes,9,opt,name=created_at,json=createdAt" json:"created_at,omitempty" bson:"created_at" bson:"created_at"`
 	// @inject_tag: bson:"updated_at"
-	UpdatedAt *google_protobuf.Timestamp `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt" json:"updated_at,omitempty" bson:"updated_at"`
+	UpdatedAt *google_protobuf.Timestamp `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt" json:"updated_at,omitempty" bson:"updated_at" bson:"updated_at"`
 	// @inject_tag: bson:"category_ids"
-	CategoryIds []string `protobuf:"bytes,11,rep,name=category_ids,json=categoryIds" json:"category_ids,omitempty" bson:"category_ids"`
+	CategoryIds []string `protobuf:"bytes,11,rep,name=category_ids,json=categoryIds" json:"category_ids,omitempty" bson:"category_ids" bson:"category_ids"`
 }
 
 func (m *Course) Reset()                    { *m = Course{} }
@@ -263,95 +257,6 @@ func init() {
 	proto.RegisterType((*CourseSlice)(nil), "go.micro.srv.courses.CourseSlice")
 	proto.RegisterType((*FindCoursesRequest)(nil), "go.micro.srv.courses.FindCoursesRequest")
 	proto.RegisterType((*Course)(nil), "go.micro.srv.courses.Course")
-}
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ client.Option
-var _ server.Option
-
-// Client API for Courses service
-
-type CoursesClient interface {
-	InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error)
-	UpdateCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*UpdateCoursesRsp, error)
-	FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*CourseSlice, error)
-}
-
-type coursesClient struct {
-	c           client.Client
-	serviceName string
-}
-
-func NewCoursesClient(serviceName string, c client.Client) CoursesClient {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(serviceName) == 0 {
-		serviceName = "go.micro.srv.courses"
-	}
-	return &coursesClient{
-		c:           c,
-		serviceName: serviceName,
-	}
-}
-
-func (c *coursesClient) InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.InsertCourses", in)
-	out := new(google_protobuf1.Empty)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *coursesClient) UpdateCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*UpdateCoursesRsp, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.UpdateCourses", in)
-	out := new(UpdateCoursesRsp)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *coursesClient) FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*CourseSlice, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.FindCourses", in)
-	out := new(CourseSlice)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for Courses service
-
-type CoursesHandler interface {
-	InsertCourses(context.Context, *CourseSlice, *google_protobuf1.Empty) error
-	UpdateCourses(context.Context, *CourseSlice, *UpdateCoursesRsp) error
-	FindCourses(context.Context, *FindCoursesRequest, *CourseSlice) error
-}
-
-func RegisterCoursesHandler(s server.Server, hdlr CoursesHandler, opts ...server.HandlerOption) {
-	s.Handle(s.NewHandler(&Courses{hdlr}, opts...))
-}
-
-type Courses struct {
-	CoursesHandler
-}
-
-func (h *Courses) InsertCourses(ctx context.Context, in *CourseSlice, out *google_protobuf1.Empty) error {
-	return h.CoursesHandler.InsertCourses(ctx, in, out)
-}
-
-func (h *Courses) UpdateCourses(ctx context.Context, in *CourseSlice, out *UpdateCoursesRsp) error {
-	return h.CoursesHandler.UpdateCourses(ctx, in, out)
-}
-
-func (h *Courses) FindCourses(ctx context.Context, in *FindCoursesRequest, out *CourseSlice) error {
-	return h.CoursesHandler.FindCourses(ctx, in, out)
 }
 
 func init() { proto.RegisterFile("proto/course/course.proto", fileDescriptor0) }
