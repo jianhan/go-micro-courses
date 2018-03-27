@@ -74,6 +74,12 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 	if len(req.Ids) > 0 {
 		query["_id"] = bson.M{"$in": req.Ids}
 	}
+	if req.End != nil {
+		query["start.seconds"] = bson.M{"$lte": req.End.Seconds}
+	}
+	if req.Start != nil {
+		query["start.seconds"] = bson.M{"$gte": req.Start.Seconds}
+	}
 	if err := c.session.DB(c.db).C(c.collection).Find(query).All(&r); err != nil {
 		return nil, err
 	}
