@@ -89,14 +89,22 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 	if len(req.Ids) > 0 {
 		query["_id"] = bson.M{"$in": req.Ids}
 	}
+	lt, gt := "$lt", "$gt"
+	if req.Inclusive {
+		lt, gt = "$lte", "$gte"
+	}
 	if req.End != nil {
-		query["start.seconds"] = bson.M{"$lte": req.End.Seconds}
+		query["start.seconds"] = bson.M{lt: req.End.Seconds}
 	}
 	if req.Start != nil {
-		query["start.seconds"] = bson.M{"$gte": req.Start.Seconds}
+		query["start.seconds"] = bson.M{gt: req.Start.Seconds}
 	}
 	query["hidden"] = bson.M{"$eq": req.Hidden}
-	if err := c.session.DB(c.db).C(c.collection).Find(query).All(&r); err != nil {
+	sorts := []string{"name"}
+	if req.Sort != nil {
+		sorts = req.Sort
+	}
+	if err := c.session.DB(c.db).C(c.collection).Find(query).Sort(sorts...).All(&r); err != nil {
 		return nil, err
 	}
 	return &pcourse.CourseSlice{Courses: r}, nil
