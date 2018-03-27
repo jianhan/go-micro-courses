@@ -18,21 +18,36 @@ type Courses struct {
 }
 
 func NewMongodbCourses(session *mgo.Session) db.Courses {
-	nameIndex := mgo.Index{
-		Key:    []string{"name"},
-		Unique: true,
-	}
+	c := session.DB(viper.GetString("mongodb.db")).C(collection)
 	slugIndex := mgo.Index{
 		Key:    []string{"slug"},
 		Unique: true,
 	}
-	c := session.DB(viper.GetString("mongodb.db")).C(collection)
-	err := c.EnsureIndex(nameIndex)
-	if err != nil {
+	if err := c.EnsureIndex(slugIndex); err != nil {
 		panic(err)
 	}
-	err = c.EnsureIndex(slugIndex)
-	if err != nil {
+	hiddenIndex := mgo.Index{
+		Key: []string{"hidden"},
+	}
+	if err := c.EnsureIndex(hiddenIndex); err != nil {
+		panic(err)
+	}
+	textIndex := mgo.Index{
+		Key: []string{"$text:name", "$text:description"},
+	}
+	if err := c.EnsureIndex(textIndex); err != nil {
+		panic(err)
+	}
+	startIndex := mgo.Index{
+		Key: []string{"start.seconds"},
+	}
+	if err := c.EnsureIndex(startIndex); err != nil {
+		panic(err)
+	}
+	endIndex := mgo.Index{
+		Key: []string{"end.seconds"},
+	}
+	if err := c.EnsureIndex(endIndex); err != nil {
 		panic(err)
 	}
 	return &Courses{
@@ -80,6 +95,7 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 	if req.Start != nil {
 		query["start.seconds"] = bson.M{"$gte": req.Start.Seconds}
 	}
+	query["hidden"] = bson.M{"$eq": req.Hidden}
 	if err := c.session.DB(c.db).C(c.collection).Find(query).All(&r); err != nil {
 		return nil, err
 	}
