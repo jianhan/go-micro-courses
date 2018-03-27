@@ -41,6 +41,7 @@ message Course {
 	string ID = 1;
     // @inject_tag: bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"
 	string name = 2;
+    // @inject_tag: valid:"required~Slug is required"
 	string slug = 3;
 	// @inject_tag: bson:"display_order"
 	uint64 display_order = 4;

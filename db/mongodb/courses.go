@@ -4,6 +4,7 @@ import (
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	"github.com/spf13/viper"
+	"github.com/y0ssar1an/q"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -46,10 +47,12 @@ func (c *Courses) InsertCourses(cs *pcourse.CourseSlice) error {
 	for _, v := range cs.Courses {
 		bulk.Insert(v)
 	}
-	_, err := bulk.Run()
+	r, err := bulk.Run()
 	if err != nil {
+		q.Q(err)
 		return err
 	}
+	q.Q(r)
 	return nil
 }
 
@@ -66,7 +69,7 @@ func (c *Courses) UpdateCourses(cs *pcourse.CourseSlice) (modified int, err erro
 }
 
 func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseSlice, error) {
-	var query bson.M
+	query := bson.M{}
 	var r []*pcourse.Course
 	if len(req.Ids) > 0 {
 		query["_id"] = bson.M{"$in": req.Ids}
