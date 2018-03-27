@@ -40,6 +40,9 @@ func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.CourseSlice, r
 }
 
 func (c *Courses) FindCourses(ctx context.Context, req *pcourse.FindCoursesRequest, rsp *pcourse.CourseSlice) (err error) {
+	if err := req.Validate(); err != nil {
+		return err
+	}
 	r, err := c.DB.FindCourses(req)
 	if err != nil {
 		return
