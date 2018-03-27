@@ -3,14 +3,10 @@ PKGS := $(shell go list ./... | grep -v /vendor)
 .PHONY: test
 test:
 	go test $(PKGS)
-
-.PHONY: lint
-lint:
-	gometalinter ./... --vendor
 # Protobuf
 pb:
 	for f in proto/**/*.proto; do \
-		protoc -I. -I${GOPATH}/src --go_out=plugins=micro,grpc:. $$f; \
+		protoc -I. -I${GOPATH}/src --micro_out=. --go_out=plugins=micro,grpc:. $$f; \
 		echo compiled: $$f; \
 	done
 injectpb:
