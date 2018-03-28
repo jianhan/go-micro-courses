@@ -15,6 +15,7 @@ import (
 )
 
 func main() {
+	os.Setenv("ENV", "development")
 	session, err := mgo.Dial("localhost")
 	if err != nil {
 		panic(err)
