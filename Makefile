@@ -7,7 +7,7 @@ GOGET=$(GOCMD) get
 BINARY_NAME=go-micro-courses
 BINARY_UNIX=$(BINARY_NAME)_unix
 
-all: test build
+all: pb injectpb test build
 build:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 test:
