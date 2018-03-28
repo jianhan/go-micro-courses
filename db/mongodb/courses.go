@@ -130,3 +130,13 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 	}
 	return &pcourse.CourseSlice{Courses: r}, nil
 }
+
+func (c *Courses) DeleteCoursesByIDs(ids []string) error{
+	if len(ids) == 0 {
+		return nil
+	}
+	if err := c.session.DB(c.db).C(c.collection).Remove(bson.M{"id": bson.M{"$in": ids}}); err != nil {
+		return err
+	}
+	return nil
+}

@@ -31,3 +31,11 @@ func (r *CourseSlice) GenerateCreatedUpdated() *CourseSlice {
 	}
 	return r
 }
+
+func (r *CourseSlice) GetCourseIDs() []string {
+	courseIDs := []string{}
+	for _,v := range r.Courses {
+		courseIDs = append(courseIDs, v.ID)
+	}
+	return courseIDs
+}

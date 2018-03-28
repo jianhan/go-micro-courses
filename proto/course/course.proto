@@ -11,6 +11,15 @@ service Courses {
 	rpc InsertCourses(CourseSlice) returns (google.protobuf.Empty);
 	rpc UpdateCourses(CourseSlice) returns (UpdateCoursesRsp);
     rpc FindCourses(FindCoursesRequest) returns (CourseSlice);
+	rpc DeleteCoursesByIDs(DeleteCoursesByIDsRequest) returns (DeleteCoursesRsp);
+}
+
+message DeleteCoursesRsp {
+    int64 deleted = 1;
+}
+
+message DeleteCoursesByIDsRequest {
+    repeated string ids = 1;
 }
 
 message UpdateCoursesRsp {
@@ -20,6 +29,8 @@ message UpdateCoursesRsp {
 message CourseSlice {
 	repeated Course courses = 1;
 }
+
+
 
 message FindCoursesRequest {
     repeated string ids = 1;

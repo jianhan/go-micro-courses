@@ -14,3 +14,6 @@ func (f *FindCoursesRequest) Validate() error {
 	}
 	return nil
 }
+
+func (f *FindCoursesRequest) MustSupplyFilter() error {
+}
