@@ -19,7 +19,6 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
-import _ "github.com/jianhan/pkg/proto/mysql"
 import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
 
 import (
