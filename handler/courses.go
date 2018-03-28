@@ -52,7 +52,10 @@ func (c *Courses) FindCourses(ctx context.Context, req *pcourse.FindCoursesReque
 	return
 }
 
-func (c *Courses) DeleteCoursesByIDs(ctx context.Context, req *pcourse.DeleteCoursesByIDsRequest, rsp *pcourse.DeleteCoursesRsp) (err error) {
+func (c *Courses) DeleteCoursesByIDs(ctx context.Context, req *pcourse.IDs, rsp *pcourse.DeleteCoursesRsp) (err error) {
+	if err = req.Validate(); err != nil {
+		return err
+	}
 	if err = c.DB.DeleteCoursesByIDs(req.Ids); err != nil {
 		return err
 	}

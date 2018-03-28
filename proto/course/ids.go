@@ -1,13 +1,16 @@
 package course
 
 import (
-	"fmt"
-
 	"github.com/asaskevich/govalidator"
+	"fmt"
+	"errors"
 )
 
-func (f *FindCoursesRequest) Validate() error {
-	for _, v := range f.Ids {
+func (i *IDs) Validate() error {
+	if len(i.Ids) == 0 {
+		return errors.New("empty ids")
+	}
+	for _, v := range i.Ids {
 		if !govalidator.IsUUID(v) {
 			return fmt.Errorf("ID %s is not a valid UUID", v)
 		}

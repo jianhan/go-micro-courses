@@ -9,7 +9,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	DeleteCoursesRsp
-	DeleteCoursesByIDsRequest
+	IDs
 	UpdateCoursesRsp
 	CourseSlice
 	FindCoursesRequest
@@ -52,7 +52,7 @@ type CoursesClient interface {
 	InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error)
 	UpdateCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*UpdateCoursesRsp, error)
 	FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*CourseSlice, error)
-	DeleteCoursesByIDs(ctx context.Context, in *DeleteCoursesByIDsRequest, opts ...client.CallOption) (*DeleteCoursesRsp, error)
+	DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error)
 }
 
 type coursesClient struct {
@@ -103,7 +103,7 @@ func (c *coursesClient) FindCourses(ctx context.Context, in *FindCoursesRequest,
 	return out, nil
 }
 
-func (c *coursesClient) DeleteCoursesByIDs(ctx context.Context, in *DeleteCoursesByIDsRequest, opts ...client.CallOption) (*DeleteCoursesRsp, error) {
+func (c *coursesClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error) {
 	req := c.c.NewRequest(c.serviceName, "Courses.DeleteCoursesByIDs", in)
 	out := new(DeleteCoursesRsp)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -119,7 +119,7 @@ type CoursesHandler interface {
 	InsertCourses(context.Context, *CourseSlice, *google_protobuf1.Empty) error
 	UpdateCourses(context.Context, *CourseSlice, *UpdateCoursesRsp) error
 	FindCourses(context.Context, *FindCoursesRequest, *CourseSlice) error
-	DeleteCoursesByIDs(context.Context, *DeleteCoursesByIDsRequest, *DeleteCoursesRsp) error
+	DeleteCoursesByIDs(context.Context, *IDs, *DeleteCoursesRsp) error
 }
 
 func RegisterCoursesHandler(s server.Server, hdlr CoursesHandler, opts ...server.HandlerOption) {
@@ -142,6 +142,6 @@ func (h *Courses) FindCourses(ctx context.Context, in *FindCoursesRequest, out *
 	return h.CoursesHandler.FindCourses(ctx, in, out)
 }
 
-func (h *Courses) DeleteCoursesByIDs(ctx context.Context, in *DeleteCoursesByIDsRequest, out *DeleteCoursesRsp) error {
+func (h *Courses) DeleteCoursesByIDs(ctx context.Context, in *IDs, out *DeleteCoursesRsp) error {
 	return h.CoursesHandler.DeleteCoursesByIDs(ctx, in, out)
 }

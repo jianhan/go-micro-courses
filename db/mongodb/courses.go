@@ -135,7 +135,7 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error{
 	if len(ids) == 0 {
 		return nil
 	}
-	if err := c.session.DB(c.db).C(c.collection).Remove(bson.M{"id": bson.M{"$in": ids}}); err != nil {
+	if err := c.session.DB(c.db).C(c.collection).Remove(bson.M{"_id": bson.M{"$in": ids}}); err != nil {
 		return err
 	}
 	return nil
