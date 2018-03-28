@@ -4,7 +4,6 @@ package go.micro.srv.courses;
 option go_package="course";
 
 import "google/protobuf/timestamp.proto";
-import "github.com/jianhan/pkg/proto/mysql/mysql.proto";
 import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for courses related functions.

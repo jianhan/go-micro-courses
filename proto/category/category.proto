@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package go.micro.srv.courses;
+option go_package="category";
+
+// Service declares all RPC calls for categories related functions.
+service Categories {
+	rpc UpsertCategories(CategoriesSlice) returns (UpsertCategoriesRsp);
+    rpc FindCategories(FindCategoriesRequest) returns (CategoriesSlice);
+}
+
+message Category {
+	// @inject_tag: bson:"_id" valid:"uuid,required~ID is required"
+	string ID = 1;
+    // @inject_tag: bson:"name" valid:"required~name is required,length(1|256)~name must be max 256 characters"
+	string name = 2;
+    // @inject_tag: valid:"required~Slug is required"
+	string slug = 3;
+	// @inject_tag: bson:"display_order"
+	uint64 display_order = 4;
+    // @inject_tag: valid:"required~Description is required"
+	string description = 5;
+	bool hidden = 6;
+    // @inject_tag: bson:"created_at"
+	google.protobuf.Timestamp created_at = 9;
+	// @inject_tag: bson:"updated_at"
+	google.protobuf.Timestamp updated_at = 10;
+}
+
+message CategoriesSlice {
+	repeated Category categories = 1;
+}
