@@ -17,25 +17,22 @@ type Courses struct {
 }
 
 func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *empty.Empty) (err error) {
-	req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs()
-	if err := req.Validate(); err != nil {
-		return err
+	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
+		return
 	}
 	if err := c.DB.InsertCourses(req); err != nil {
-		return err
+		return
 	}
 	return
 }
 
 func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *pcourse.UpdateCoursesRsp) (err error) {
-	req.GenerateSlugs()
-	if err := req.Validate(); err != nil {
+	if err = req.GenerateSlugs().GenerateCreatedUpdated().Validate(); err != nil {
 		return err
 	}
-	req.GenerateCreatedUpdated()
 	updated, err := c.DB.UpdateCourses(req)
 	if err != nil {
-		return err
+		return
 	}
 	rsp.Updated = int64(updated)
 	return

@@ -1,6 +1,8 @@
 package category
 
 import (
+	"errors"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/gosimple/slug"
@@ -8,6 +10,9 @@ import (
 )
 
 func (c *CategorySlice) Validate() error {
+	if len(c.Categories) == 0 {
+		return errors.New("Categories are empty")
+	}
 	for k := range c.Categories {
 		if _, err := govalidator.ValidateStruct(c.Categories[k]); err != nil {
 			return err

@@ -2,7 +2,10 @@ package handler
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jianhan/go-micro-courses/db"
 	pcategory "github.com/jianhan/go-micro-courses/proto/category"
@@ -14,7 +17,9 @@ type Categories struct {
 }
 
 func (c *Categories) InsertCategories(ctx context.Context, req *pcategory.CategorySlice, rsp *pcategory.InsertCategoriesResponse) (err error) {
-	req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs()
+	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
+		return
+	}
 	if rsp.Inserted, err = c.DB.InsertCategories(req); err != nil {
 		return
 	}
@@ -22,11 +27,9 @@ func (c *Categories) InsertCategories(ctx context.Context, req *pcategory.Catego
 }
 
 func (c *Categories) UpdateCategories(ctx context.Context, req *pcategory.CategorySlice, rsp *pcategory.UpdateCategoriesResponse) (err error) {
-	req.GenerateSlugs()
-	if err = req.Validate(); err != nil {
-		return
+	if err = req.GenerateSlugs().GenerateCreatedUpdated().Validate(); err != nil {
+		return err
 	}
-	req.GenerateCreatedUpdated()
 	rsp.Updated, err = c.DB.UpdateCategories(req)
 	if err != nil {
 		return
@@ -46,5 +49,16 @@ func (c *Categories) FindCategories(ctx context.Context, req *pcategory.FindCate
 }
 
 func (c *Categories) DeleteCategoriesByIDs(ctx context.Context, req *pcategory.DeleteCategoriesByIDsRequest, rsp *empty.Empty) (err error) {
-	return nil
+	if len(req.Ids) == 0 {
+		return errors.New("empty ids")
+	}
+	for _, v := range req.Ids {
+		if !govalidator.IsUUID(v) {
+			return fmt.Errorf("ID %s is not a valid UUID", v)
+		}
+	}
+	if err = c.DB.DeleteCategoriesByIDs(req.Ids); err != nil {
+		return
+	}
+	return
 }

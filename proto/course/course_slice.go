@@ -1,13 +1,18 @@
 package course
 
 import (
+	"errors"
+
 	"github.com/asaskevich/govalidator"
-	"github.com/satori/go.uuid"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/gosimple/slug"
+	"github.com/satori/go.uuid"
 )
 
 func (r *CourseSlice) Validate() error {
+	if len(r.Courses) == 0 {
+		return errors.New("Courses are empty")
+	}
 	for k := range r.Courses {
 		if _, err := govalidator.ValidateStruct(r.Courses[k]); err != nil {
 			return err
@@ -37,7 +42,7 @@ func (r *CourseSlice) GenerateSlugs() *CourseSlice {
 	for k := range r.Courses {
 		if r.Courses[k].Slug == "" {
 			r.Courses[k].Slug = slug.Make(r.Courses[k].Name)
-		} else if !slug.IsSlug(r.Courses[k].Slug){
+		} else if !slug.IsSlug(r.Courses[k].Slug) {
 			r.Courses[k].Slug = slug.Make(r.Courses[k].Slug)
 		}
 	}
@@ -46,7 +51,7 @@ func (r *CourseSlice) GenerateSlugs() *CourseSlice {
 
 func (r *CourseSlice) GetCourseIDs() []string {
 	courseIDs := []string{}
-	for _,v := range r.Courses {
+	for _, v := range r.Courses {
 		courseIDs = append(courseIDs, v.ID)
 	}
 	return courseIDs
