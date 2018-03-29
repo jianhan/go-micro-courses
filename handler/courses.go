@@ -8,9 +8,6 @@ import (
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 )
 
-// API is a constant to define the name of API.
-const API = "go_micro_srv_courses"
-
 // Courses handles all incomming request related to course.
 type Courses struct {
 	DB db.Courses
