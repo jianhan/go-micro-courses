@@ -20,7 +20,7 @@ func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, r
 	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
 		return
 	}
-	if err := c.DB.InsertCourses(req); err != nil {
+	if err = c.DB.InsertCourses(req); err != nil {
 		return
 	}
 	return
