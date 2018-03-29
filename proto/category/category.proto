@@ -4,12 +4,14 @@ package go.micro.srv.courses;
 option go_package="category";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for categories related functions.
 service Categories {
-	rpc UpsertCategories (CategorySlice) returns (UpsertCategoriesRsp);
+	rpc InsertCategories (CategorySlice) returns (InsertCategoriesResponse);
+	rpc UpdateCategories (CategorySlice) returns (UpdateCategoriesResponse);
 	rpc FindCategories (FindCategoriesRequest) returns (CategorySlice);
-	rpc DeleteCategoriesByIDs (DeleteCategoriesByIDsRequest) returns (DeleteCategoriesByIDsResponse);
+	rpc DeleteCategoriesByIDs (DeleteCategoriesByIDsRequest) returns (google.protobuf.Empty);
 }
 
 message Category {
@@ -34,7 +36,11 @@ message CategorySlice {
 	repeated Category categories = 1;
 }
 
-message UpsertCategoriesRsp {
+message InsertCategoriesResponse {
+	int64 inserted = 1;
+}
+
+message UpdateCategoriesResponse {
 	int64 updated = 1;
 }
 
@@ -49,8 +55,4 @@ message FindCategoriesRequest {
 
 message DeleteCategoriesByIDsRequest {
 	repeated string ids = 1;
-}
-
-message DeleteCategoriesByIDsResponse {
-	uint64 deleted = 1;
 }

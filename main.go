@@ -7,8 +7,8 @@ import (
 
 	mongodb "github.com/jianhan/go-micro-courses/db/mongodb"
 	"github.com/jianhan/go-micro-courses/handler"
-	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	pcategory "github.com/jianhan/go-micro-courses/proto/category"
+	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	cfgreader "github.com/jianhan/pkg/configs"
 	micro "github.com/micro/go-micro"
 	log "github.com/sirupsen/logrus"
@@ -46,7 +46,7 @@ func main() {
 	pcategory.RegisterCategoriesHandler(
 		srv.Server(),
 		&handler.Categories{
-			DB: mongodb.NewMongodbCourses(session),
+			DB: mongodb.NewMongodbCategories(session),
 		},
 	)
 	if err := srv.Run(); err != nil {

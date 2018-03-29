@@ -1,16 +1,14 @@
 package mongodb
 
 import (
+	"strings"
+
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	"github.com/spf13/viper"
-	"github.com/y0ssar1an/q"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"strings"
 )
-
-const collection = "courses"
 
 type Courses struct {
 	session     *mgo.Session
@@ -21,6 +19,7 @@ type Courses struct {
 }
 
 func NewMongodbCourses(session *mgo.Session) db.Courses {
+	collection := "courses"
 	c := session.DB(viper.GetString("mongodb.db")).C(collection)
 	slugIndex := mgo.Index{
 		Key:    []string{"slug"},
@@ -67,12 +66,10 @@ func (c *Courses) InsertCourses(cs *pcourse.CourseSlice) error {
 	for _, v := range cs.Courses {
 		bulk.Insert(v)
 	}
-	r, err := bulk.Run()
+	_, err := bulk.Run()
 	if err != nil {
-		q.Q(err)
 		return err
 	}
-	q.Q(r)
 	return nil
 }
 
@@ -116,7 +113,7 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 		query["$text"] = bson.M{"$search": req.Query}
 	}
 	// set sort condition
-	sorts := []string{"name"}
+	sorts := []string{"display_order", "name"}
 	if req.Sort != nil {
 		sorts = req.Sort
 	}
@@ -136,7 +133,7 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 	return &pcourse.CourseSlice{Courses: r}, nil
 }
 
-func (c *Courses) DeleteCoursesByIDs(ids []string) error{
+func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 	if len(ids) == 0 {
 		return nil
 	}
