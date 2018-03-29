@@ -7,6 +7,7 @@ import (
 	"github.com/y0ssar1an/q"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"strings"
 )
 
 const collection = "courses"
@@ -110,6 +111,10 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.CourseS
 	}
 	// set hidden condition
 	query["hidden"] = bson.M{"$eq": req.Hidden}
+	// set search
+	if strings.TrimSpace(req.Query) != "" {
+		query["$text"] = bson.M{"$search": req.Query}
+	}
 	// set sort condition
 	sorts := []string{"name"}
 	if req.Sort != nil {

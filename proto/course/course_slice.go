@@ -33,7 +33,7 @@ func (r *CourseSlice) GenerateCreatedUpdated() *CourseSlice {
 	return r
 }
 
-func (r *CourseSlice) GenerateSlug() *CourseSlice {
+func (r *CourseSlice) GenerateSlugs() *CourseSlice {
 	for k := range r.Courses {
 		if r.Courses[k].Slug == "" {
 			r.Courses[k].Slug = slug.Make(r.Courses[k].Name)

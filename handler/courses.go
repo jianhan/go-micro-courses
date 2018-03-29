@@ -17,7 +17,7 @@ type Courses struct {
 }
 
 func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *empty.Empty) (err error) {
-	req.GenerateCreatedUpdated().GenerateIDs()
+	req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs()
 	if err := req.Validate(); err != nil {
 		return err
 	}
@@ -28,6 +28,7 @@ func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, r
 }
 
 func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *pcourse.UpdateCoursesRsp) (err error) {
+	req.GenerateSlugs()
 	if err := req.Validate(); err != nil {
 		return err
 	}
