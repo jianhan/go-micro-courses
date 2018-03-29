@@ -9,6 +9,7 @@ import "google/protobuf/timestamp.proto";
 service Categories {
 	rpc UpsertCategories (CategorySlice) returns (UpsertCategoriesRsp);
 	rpc FindCategories (FindCategoriesRequest) returns (CategorySlice);
+	rpc DeleteCategoriesByIDs (DeleteCategoriesByIDsRequest) returns (DeleteCategoriesByIDsResponse);
 }
 
 message Category {
@@ -44,4 +45,12 @@ message FindCategoriesRequest {
     repeated string sort = 4;
     int64 per_page = 5;
     int64 current_page = 6;
+}
+
+message DeleteCategoriesByIDsRequest {
+	repeated string ids = 1;
+}
+
+message DeleteCategoriesByIDsResponse {
+	uint64 deleted = 1;
 }

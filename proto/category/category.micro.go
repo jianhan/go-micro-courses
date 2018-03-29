@@ -12,6 +12,8 @@ It has these top-level messages:
 	CategorySlice
 	UpsertCategoriesRsp
 	FindCategoriesRequest
+	DeleteCategoriesByIDsRequest
+	DeleteCategoriesByIDsResponse
 */
 package category
 
@@ -47,6 +49,7 @@ var _ server.Option
 type CategoriesClient interface {
 	UpsertCategories(ctx context.Context, in *CategorySlice, opts ...client.CallOption) (*UpsertCategoriesRsp, error)
 	FindCategories(ctx context.Context, in *FindCategoriesRequest, opts ...client.CallOption) (*CategorySlice, error)
+	DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, opts ...client.CallOption) (*DeleteCategoriesByIDsResponse, error)
 }
 
 type categoriesClient struct {
@@ -87,11 +90,22 @@ func (c *categoriesClient) FindCategories(ctx context.Context, in *FindCategorie
 	return out, nil
 }
 
+func (c *categoriesClient) DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, opts ...client.CallOption) (*DeleteCategoriesByIDsResponse, error) {
+	req := c.c.NewRequest(c.serviceName, "Categories.DeleteCategoriesByIDs", in)
+	out := new(DeleteCategoriesByIDsResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Categories service
 
 type CategoriesHandler interface {
 	UpsertCategories(context.Context, *CategorySlice, *UpsertCategoriesRsp) error
 	FindCategories(context.Context, *FindCategoriesRequest, *CategorySlice) error
+	DeleteCategoriesByIDs(context.Context, *DeleteCategoriesByIDsRequest, *DeleteCategoriesByIDsResponse) error
 }
 
 func RegisterCategoriesHandler(s server.Server, hdlr CategoriesHandler, opts ...server.HandlerOption) {
@@ -108,4 +122,8 @@ func (h *Categories) UpsertCategories(ctx context.Context, in *CategorySlice, ou
 
 func (h *Categories) FindCategories(ctx context.Context, in *FindCategoriesRequest, out *CategorySlice) error {
 	return h.CategoriesHandler.FindCategories(ctx, in, out)
+}
+
+func (h *Categories) DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, out *DeleteCategoriesByIDsResponse) error {
+	return h.CategoriesHandler.DeleteCategoriesByIDs(ctx, in, out)
 }
