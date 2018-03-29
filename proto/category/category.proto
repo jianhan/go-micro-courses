@@ -24,9 +24,9 @@ message Category {
 	string description = 5;
 	bool hidden = 6;
     // @inject_tag: bson:"created_at"
-	google.protobuf.Timestamp created_at = 9;
+	google.protobuf.Timestamp created_at = 7;
 	// @inject_tag: bson:"updated_at"
-	google.protobuf.Timestamp updated_at = 10;
+	google.protobuf.Timestamp updated_at = 8;
 }
 
 message CategorySlice {
