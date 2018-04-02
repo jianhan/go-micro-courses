@@ -8,11 +8,29 @@ import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for courses related functions.
 service Courses {
-    rpc UpsertCourse(Course) returns (Course);
-	rpc InsertCourses(CourseSlice) returns (google.protobuf.Empty);
-	rpc UpdateCourses(CourseSlice) returns (UpdateCoursesRsp);
-    rpc FindCourses(FindCoursesRequest) returns (CourseSlice);
-	rpc DeleteCoursesByIDs(IDs) returns (DeleteCoursesRsp);
+	rpc UpsertCourse (UpsertCourseReq) returns (UpsertCourseRsp);
+	rpc InsertCourses (InsertCoursesReq) returns (InsertCoursesRsp);
+	rpc UpdateCourses (UpdateCoursesReq) returns (UpdateCoursesRsp);
+	rpc FindCourses (FindCoursesReq) returns (FindCoursesRsp);
+	rpc DeleteCoursesByIDs (IDs) returns (DeleteCoursesRsp);
+}
+
+message UpsertCourseReq {
+	Course course = 1;
+}
+
+message UpsertCourseRsp {
+	Course course = 1;
+	int64 inserted = 2;
+	int64 updated = 3;
+}
+
+message InsertCoursesReq {
+	repeated Course courses = 1;
+}
+
+message InsertCoursesRsp {
+	int64 inserted = 1;
 }
 
 message DeleteCoursesRsp {
@@ -23,15 +41,23 @@ message IDs {
     repeated string ids = 1;
 }
 
+message UpdateCoursesReq {
+	Course course = 1;
+}
+
 message UpdateCoursesRsp {
     int64 updated = 1;
 }
 
-message CourseSlice {
+message FindCoursesRsp {
 	repeated Course courses = 1;
 }
 
-message FindCoursesRequest {
+message Courses {
+	repeated Course courses = 1;
+}
+
+message FindCoursesReq {
     repeated string ids = 1;
     string query = 2;
     google.protobuf.Timestamp start = 3;

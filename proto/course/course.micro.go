@@ -11,7 +11,7 @@ It has these top-level messages:
 	DeleteCoursesRsp
 	IDs
 	UpdateCoursesRsp
-	CourseSlice
+	courses
 	FindCoursesRequest
 	Course
 */
@@ -24,9 +24,10 @@ import _ "github.com/golang/protobuf/ptypes/timestamp"
 import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
 
 import (
+	context "context"
+
 	client "github.com/micro/go-micro/client"
 	server "github.com/micro/go-micro/server"
-	context "context"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -50,9 +51,9 @@ var _ server.Option
 
 type CoursesClient interface {
 	UpsertCourse(ctx context.Context, in *Course, opts ...client.CallOption) (*Course, error)
-	InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error)
-	UpdateCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*UpdateCoursesRsp, error)
-	FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*CourseSlice, error)
+	InsertCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*google_protobuf1.Empty, error)
+	UpdateCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*UpdateCoursesRsp, error)
+	FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*courses, error)
 	DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error)
 }
 
@@ -84,7 +85,7 @@ func (c *coursesClient) UpsertCourse(ctx context.Context, in *Course, opts ...cl
 	return out, nil
 }
 
-func (c *coursesClient) InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
+func (c *coursesClient) InsertCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
 	req := c.c.NewRequest(c.serviceName, "Courses.InsertCourses", in)
 	out := new(google_protobuf1.Empty)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -94,7 +95,7 @@ func (c *coursesClient) InsertCourses(ctx context.Context, in *CourseSlice, opts
 	return out, nil
 }
 
-func (c *coursesClient) UpdateCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*UpdateCoursesRsp, error) {
+func (c *coursesClient) UpdateCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*UpdateCoursesRsp, error) {
 	req := c.c.NewRequest(c.serviceName, "Courses.UpdateCourses", in)
 	out := new(UpdateCoursesRsp)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -104,9 +105,9 @@ func (c *coursesClient) UpdateCourses(ctx context.Context, in *CourseSlice, opts
 	return out, nil
 }
 
-func (c *coursesClient) FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*CourseSlice, error) {
+func (c *coursesClient) FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*courses, error) {
 	req := c.c.NewRequest(c.serviceName, "Courses.FindCourses", in)
-	out := new(CourseSlice)
+	out := new(courses)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -128,9 +129,9 @@ func (c *coursesClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ..
 
 type CoursesHandler interface {
 	UpsertCourse(context.Context, *Course, *Course) error
-	InsertCourses(context.Context, *CourseSlice, *google_protobuf1.Empty) error
-	UpdateCourses(context.Context, *CourseSlice, *UpdateCoursesRsp) error
-	FindCourses(context.Context, *FindCoursesRequest, *CourseSlice) error
+	InsertCourses(context.Context, *courses, *google_protobuf1.Empty) error
+	UpdateCourses(context.Context, *courses, *UpdateCoursesRsp) error
+	FindCourses(context.Context, *FindCoursesRequest, *courses) error
 	DeleteCoursesByIDs(context.Context, *IDs, *DeleteCoursesRsp) error
 }
 
@@ -146,15 +147,15 @@ func (h *Courses) UpsertCourse(ctx context.Context, in *Course, out *Course) err
 	return h.CoursesHandler.UpsertCourse(ctx, in, out)
 }
 
-func (h *Courses) InsertCourses(ctx context.Context, in *CourseSlice, out *google_protobuf1.Empty) error {
+func (h *Courses) InsertCourses(ctx context.Context, in *courses, out *google_protobuf1.Empty) error {
 	return h.CoursesHandler.InsertCourses(ctx, in, out)
 }
 
-func (h *Courses) UpdateCourses(ctx context.Context, in *CourseSlice, out *UpdateCoursesRsp) error {
+func (h *Courses) UpdateCourses(ctx context.Context, in *courses, out *UpdateCoursesRsp) error {
 	return h.CoursesHandler.UpdateCourses(ctx, in, out)
 }
 
-func (h *Courses) FindCourses(ctx context.Context, in *FindCoursesRequest, out *CourseSlice) error {
+func (h *Courses) FindCourses(ctx context.Context, in *FindCoursesRequest, out *courses) error {
 	return h.CoursesHandler.FindCourses(ctx, in, out)
 }
 

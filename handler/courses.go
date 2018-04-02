@@ -20,7 +20,7 @@ func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.Course, rsp *pc
 	return
 }
 
-func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *empty.Empty) (err error) {
+func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.Courses, rsp *empty.Empty) (err error) {
 	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
 		return
 	}
@@ -30,7 +30,7 @@ func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, r
 	return
 }
 
-func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *pcourse.UpdateCoursesRsp) (err error) {
+func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.courses, rsp *pcourse.UpdateCoursesRsp) (err error) {
 	if err = req.GenerateSlugs().GenerateCreatedUpdated().Validate(); err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.CourseSlice, r
 	return
 }
 
-func (c *Courses) FindCourses(ctx context.Context, req *pcourse.FindCoursesRequest, rsp *pcourse.CourseSlice) (err error) {
+func (c *Courses) FindCourses(ctx context.Context, req *pcourse.FindCoursesRequest, rsp *pcourse.courses) (err error) {
 	if err := req.Validate(); err != nil {
 		return err
 	}
