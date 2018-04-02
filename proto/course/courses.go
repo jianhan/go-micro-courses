@@ -9,7 +9,7 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-func (r *courses) Validate() error {
+func (r *Courses) Validate() error {
 	if len(r.Courses) == 0 {
 		return errors.New("Courses are empty")
 	}
@@ -21,14 +21,14 @@ func (r *courses) Validate() error {
 	return nil
 }
 
-func (r *courses) GenerateIDs() *courses {
+func (r *Courses) GenerateIDs() *Courses {
 	for k := range r.Courses {
 		r.Courses[k].ID = uuid.Must(uuid.NewV4()).String()
 	}
 	return r
 }
 
-func (r *courses) GenerateCreatedUpdated() *courses {
+func (r *Courses) GenerateCreatedUpdated() *Courses {
 	for k := range r.Courses {
 		r.Courses[k].UpdatedAt = ptypes.TimestampNow()
 		if r.Courses[k].ID == "" {
@@ -38,7 +38,7 @@ func (r *courses) GenerateCreatedUpdated() *courses {
 	return r
 }
 
-func (r *courses) GenerateSlugs() *courses {
+func (r *Courses) GenerateSlugs() *Courses {
 	for k := range r.Courses {
 		if r.Courses[k].Slug == "" {
 			r.Courses[k].Slug = slug.Make(r.Courses[k].Name)
@@ -49,7 +49,7 @@ func (r *courses) GenerateSlugs() *courses {
 	return r
 }
 
-func (r *courses) GetCourseIDs() []string {
+func (r *Courses) GetCourseIDs() []string {
 	courseIDs := []string{}
 	for _, v := range r.Courses {
 		courseIDs = append(courseIDs, v.ID)

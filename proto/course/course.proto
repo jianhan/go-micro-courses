@@ -4,13 +4,12 @@ package go.micro.srv.courses;
 option go_package="course";
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for courses related functions.
-service Courses {
+service CourseService {
 	rpc UpsertCourse (UpsertCourseReq) returns (UpsertCourseRsp);
-	rpc InsertCourses (InsertCoursesReq) returns (InsertCoursesRsp);
-	rpc UpdateCourses (UpdateCoursesReq) returns (UpdateCoursesRsp);
+	rpc InsertCourses (Courses) returns (InsertCoursesRsp);
+	rpc UpdateCourses (Courses) returns (UpdateCoursesRsp);
 	rpc FindCourses (FindCoursesReq) returns (FindCoursesRsp);
 	rpc DeleteCoursesByIDs (IDs) returns (DeleteCoursesRsp);
 }
@@ -25,10 +24,6 @@ message UpsertCourseRsp {
 	int64 updated = 3;
 }
 
-message InsertCoursesReq {
-	repeated Course courses = 1;
-}
-
 message InsertCoursesRsp {
 	int64 inserted = 1;
 }
@@ -39,10 +34,6 @@ message DeleteCoursesRsp {
 
 message IDs {
     repeated string ids = 1;
-}
-
-message UpdateCoursesReq {
-	Course course = 1;
 }
 
 message UpdateCoursesRsp {

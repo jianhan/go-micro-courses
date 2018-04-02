@@ -62,7 +62,7 @@ func NewMongodbCourses(session *mgo.Session) db.Courses {
 	}
 }
 
-func (c *Courses) InsertCourses(cs *pcourse.courses) error {
+func (c *Courses) InsertCourses(cs *pcourse.Courses) error {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range cs.Courses {
 		bulk.Insert(v)
@@ -74,7 +74,7 @@ func (c *Courses) InsertCourses(cs *pcourse.courses) error {
 	return nil
 }
 
-func (c *Courses) UpdateCourses(cs *pcourse.courses) (modified int, err error) {
+func (c *Courses) UpdateCourses(cs *pcourse.Courses) (modified int, err error) {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range cs.Courses {
 		bulk.Update(bson.M{"_id": v.ID}, v)
@@ -86,7 +86,7 @@ func (c *Courses) UpdateCourses(cs *pcourse.courses) (modified int, err error) {
 	return r.Modified, nil
 }
 
-func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.courses, error) {
+func (c *Courses) FindCourses(req *pcourse.FindCoursesReq) (*pcourse.Courses, error) {
 	// define query
 	query := bson.M{}
 	var r []*pcourse.Course
@@ -131,7 +131,7 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesRequest) (*pcourse.courses
 	if err := c.session.DB(c.db).C(c.collection).Find(query).Sort(sorts...).Skip(perPage * (currentPage - 1)).Limit(perPage).All(&r); err != nil {
 		return nil, err
 	}
-	return &pcourse.courses{Courses: r}, nil
+	return &pcourse.Courses{Courses: r}, nil
 }
 
 func (c *Courses) DeleteCoursesByIDs(ids []string) error {

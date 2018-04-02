@@ -8,11 +8,15 @@ It is generated from these files:
 	proto/course/course.proto
 
 It has these top-level messages:
+	UpsertCourseReq
+	UpsertCourseRsp
+	InsertCoursesRsp
 	DeleteCoursesRsp
 	IDs
 	UpdateCoursesRsp
-	courses
-	FindCoursesRequest
+	FindCoursesRsp
+	Courses
+	FindCoursesReq
 	Course
 */
 package course
@@ -21,20 +25,17 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
-import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
 
 import (
-	context "context"
-
 	client "github.com/micro/go-micro/client"
 	server "github.com/micro/go-micro/server"
+	context "context"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = google_protobuf1.Empty{}
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -47,37 +48,37 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
-// Client API for Courses service
+// Client API for CourseService service
 
-type CoursesClient interface {
-	UpsertCourse(ctx context.Context, in *Course, opts ...client.CallOption) (*Course, error)
-	InsertCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*google_protobuf1.Empty, error)
-	UpdateCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*UpdateCoursesRsp, error)
-	FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*courses, error)
+type CourseServiceClient interface {
+	UpsertCourse(ctx context.Context, in *UpsertCourseReq, opts ...client.CallOption) (*UpsertCourseRsp, error)
+	InsertCourses(ctx context.Context, in *Courses, opts ...client.CallOption) (*InsertCoursesRsp, error)
+	UpdateCourses(ctx context.Context, in *Courses, opts ...client.CallOption) (*UpdateCoursesRsp, error)
+	FindCourses(ctx context.Context, in *FindCoursesReq, opts ...client.CallOption) (*FindCoursesRsp, error)
 	DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error)
 }
 
-type coursesClient struct {
+type courseServiceClient struct {
 	c           client.Client
 	serviceName string
 }
 
-func NewCoursesClient(serviceName string, c client.Client) CoursesClient {
+func NewCourseServiceClient(serviceName string, c client.Client) CourseServiceClient {
 	if c == nil {
 		c = client.NewClient()
 	}
 	if len(serviceName) == 0 {
 		serviceName = "go.micro.srv.courses"
 	}
-	return &coursesClient{
+	return &courseServiceClient{
 		c:           c,
 		serviceName: serviceName,
 	}
 }
 
-func (c *coursesClient) UpsertCourse(ctx context.Context, in *Course, opts ...client.CallOption) (*Course, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.UpsertCourse", in)
-	out := new(Course)
+func (c *courseServiceClient) UpsertCourse(ctx context.Context, in *UpsertCourseReq, opts ...client.CallOption) (*UpsertCourseRsp, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.UpsertCourse", in)
+	out := new(UpsertCourseRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -85,9 +86,9 @@ func (c *coursesClient) UpsertCourse(ctx context.Context, in *Course, opts ...cl
 	return out, nil
 }
 
-func (c *coursesClient) InsertCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.InsertCourses", in)
-	out := new(google_protobuf1.Empty)
+func (c *courseServiceClient) InsertCourses(ctx context.Context, in *Courses, opts ...client.CallOption) (*InsertCoursesRsp, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.InsertCourses", in)
+	out := new(InsertCoursesRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,8 +96,8 @@ func (c *coursesClient) InsertCourses(ctx context.Context, in *courses, opts ...
 	return out, nil
 }
 
-func (c *coursesClient) UpdateCourses(ctx context.Context, in *courses, opts ...client.CallOption) (*UpdateCoursesRsp, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.UpdateCourses", in)
+func (c *courseServiceClient) UpdateCourses(ctx context.Context, in *Courses, opts ...client.CallOption) (*UpdateCoursesRsp, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.UpdateCourses", in)
 	out := new(UpdateCoursesRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -105,9 +106,9 @@ func (c *coursesClient) UpdateCourses(ctx context.Context, in *courses, opts ...
 	return out, nil
 }
 
-func (c *coursesClient) FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*courses, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.FindCourses", in)
-	out := new(courses)
+func (c *courseServiceClient) FindCourses(ctx context.Context, in *FindCoursesReq, opts ...client.CallOption) (*FindCoursesRsp, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.FindCourses", in)
+	out := new(FindCoursesRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -115,8 +116,8 @@ func (c *coursesClient) FindCourses(ctx context.Context, in *FindCoursesRequest,
 	return out, nil
 }
 
-func (c *coursesClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error) {
-	req := c.c.NewRequest(c.serviceName, "Courses.DeleteCoursesByIDs", in)
+func (c *courseServiceClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.DeleteCoursesByIDs", in)
 	out := new(DeleteCoursesRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -125,40 +126,40 @@ func (c *coursesClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ..
 	return out, nil
 }
 
-// Server API for Courses service
+// Server API for CourseService service
 
-type CoursesHandler interface {
-	UpsertCourse(context.Context, *Course, *Course) error
-	InsertCourses(context.Context, *courses, *google_protobuf1.Empty) error
-	UpdateCourses(context.Context, *courses, *UpdateCoursesRsp) error
-	FindCourses(context.Context, *FindCoursesRequest, *courses) error
+type CourseServiceHandler interface {
+	UpsertCourse(context.Context, *UpsertCourseReq, *UpsertCourseRsp) error
+	InsertCourses(context.Context, *Courses, *InsertCoursesRsp) error
+	UpdateCourses(context.Context, *Courses, *UpdateCoursesRsp) error
+	FindCourses(context.Context, *FindCoursesReq, *FindCoursesRsp) error
 	DeleteCoursesByIDs(context.Context, *IDs, *DeleteCoursesRsp) error
 }
 
-func RegisterCoursesHandler(s server.Server, hdlr CoursesHandler, opts ...server.HandlerOption) {
-	s.Handle(s.NewHandler(&Courses{hdlr}, opts...))
+func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) {
+	s.Handle(s.NewHandler(&CourseService{hdlr}, opts...))
 }
 
-type Courses struct {
-	CoursesHandler
+type CourseService struct {
+	CourseServiceHandler
 }
 
-func (h *Courses) UpsertCourse(ctx context.Context, in *Course, out *Course) error {
-	return h.CoursesHandler.UpsertCourse(ctx, in, out)
+func (h *CourseService) UpsertCourse(ctx context.Context, in *UpsertCourseReq, out *UpsertCourseRsp) error {
+	return h.CourseServiceHandler.UpsertCourse(ctx, in, out)
 }
 
-func (h *Courses) InsertCourses(ctx context.Context, in *courses, out *google_protobuf1.Empty) error {
-	return h.CoursesHandler.InsertCourses(ctx, in, out)
+func (h *CourseService) InsertCourses(ctx context.Context, in *Courses, out *InsertCoursesRsp) error {
+	return h.CourseServiceHandler.InsertCourses(ctx, in, out)
 }
 
-func (h *Courses) UpdateCourses(ctx context.Context, in *courses, out *UpdateCoursesRsp) error {
-	return h.CoursesHandler.UpdateCourses(ctx, in, out)
+func (h *CourseService) UpdateCourses(ctx context.Context, in *Courses, out *UpdateCoursesRsp) error {
+	return h.CourseServiceHandler.UpdateCourses(ctx, in, out)
 }
 
-func (h *Courses) FindCourses(ctx context.Context, in *FindCoursesRequest, out *courses) error {
-	return h.CoursesHandler.FindCourses(ctx, in, out)
+func (h *CourseService) FindCourses(ctx context.Context, in *FindCoursesReq, out *FindCoursesRsp) error {
+	return h.CourseServiceHandler.FindCourses(ctx, in, out)
 }
 
-func (h *Courses) DeleteCoursesByIDs(ctx context.Context, in *IDs, out *DeleteCoursesRsp) error {
-	return h.CoursesHandler.DeleteCoursesByIDs(ctx, in, out)
+func (h *CourseService) DeleteCoursesByIDs(ctx context.Context, in *IDs, out *DeleteCoursesRsp) error {
+	return h.CourseServiceHandler.DeleteCoursesByIDs(ctx, in, out)
 }

@@ -6,8 +6,8 @@ import (
 
 type Courses interface {
 	UpsertCourse(course *pcourse.Course) (*pcourse.Course, error)
-	InsertCourses(courses *pcourse.courses) error
-	UpdateCourses(courses *pcourse.courses) (int, error)
-	FindCourses(request *pcourse.FindCoursesRequest) (*pcourse.courses, error)
+	InsertCourses(courses *pcourse.Courses) error
+	UpdateCourses(courses *pcourse.Courses) (int, error)
+	FindCourses(request *pcourse.FindCoursesReq) (*pcourse.Courses, error)
 	DeleteCoursesByIDs(ids []string) error
 }

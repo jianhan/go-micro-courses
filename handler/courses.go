@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 )
@@ -13,14 +12,15 @@ type Courses struct {
 	DB db.Courses
 }
 
-func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.Upsert, rsp *pcourse.Course) (err error) {
-	if rsp, err = c.DB.UpsertCourse(req); err != nil {
+func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.UpsertCourseReq, rsp *pcourse.UpsertCourseRsp) (err error) {
+	if rsp.Course, err = c.DB.UpsertCourse(req.Course); err != nil {
 		return
 	}
 	return
 }
 
-func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.Courses, rsp *empty.Empty) (err error) {
+func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.Courses, rsp *pcourse.InsertCoursesRsp) (err error) {
+	// TODO: fill rsp
 	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
 		return
 	}
@@ -30,7 +30,7 @@ func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.Courses, rsp *
 	return
 }
 
-func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.courses, rsp *pcourse.UpdateCoursesRsp) (err error) {
+func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.Courses, rsp *pcourse.UpdateCoursesRsp) (err error) {
 	if err = req.GenerateSlugs().GenerateCreatedUpdated().Validate(); err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (c *Courses) UpdateCourses(ctx context.Context, req *pcourse.courses, rsp *
 	return
 }
 
-func (c *Courses) FindCourses(ctx context.Context, req *pcourse.FindCoursesRequest, rsp *pcourse.courses) (err error) {
+func (c *Courses) FindCourses(ctx context.Context, req *pcourse.FindCoursesReq, rsp *pcourse.FindCoursesRsp) (err error) {
 	if err := req.Validate(); err != nil {
 		return err
 	}

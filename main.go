@@ -37,7 +37,7 @@ func main() {
 		micro.Metadata(serviceConfigs.Metadata),
 	)
 	srv.Init()
-	pcourse.RegisterCoursesHandler(
+	pcourse.RegisterCourseServiceHandler(
 		srv.Server(),
 		&handler.Courses{
 			DB: mongodb.NewMongodbCourses(session),

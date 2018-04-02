@@ -6,7 +6,7 @@ import (
 	"github.com/asaskevich/govalidator"
 )
 
-func (f *FindCoursesRequest) Validate() error {
+func (f *FindCoursesReq) Validate() error {
 	for _, v := range f.Ids {
 		if !govalidator.IsUUID(v) {
 			return fmt.Errorf("ID %s is not a valid UUID", v)
