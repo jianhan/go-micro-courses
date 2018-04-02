@@ -13,7 +13,7 @@ type Courses struct {
 	DB db.Courses
 }
 
-func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.Course, rsp *pcourse.Course) (err error) {
+func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.Upsert, rsp *pcourse.Course) (err error) {
 	if rsp, err = c.DB.UpsertCourse(req); err != nil {
 		return
 	}
