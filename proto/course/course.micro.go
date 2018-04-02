@@ -49,6 +49,7 @@ var _ server.Option
 // Client API for Courses service
 
 type CoursesClient interface {
+	UpsertCourse(ctx context.Context, in *Course, opts ...client.CallOption) (*Course, error)
 	InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error)
 	UpdateCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*UpdateCoursesRsp, error)
 	FindCourses(ctx context.Context, in *FindCoursesRequest, opts ...client.CallOption) (*CourseSlice, error)
@@ -71,6 +72,16 @@ func NewCoursesClient(serviceName string, c client.Client) CoursesClient {
 		c:           c,
 		serviceName: serviceName,
 	}
+}
+
+func (c *coursesClient) UpsertCourse(ctx context.Context, in *Course, opts ...client.CallOption) (*Course, error) {
+	req := c.c.NewRequest(c.serviceName, "Courses.UpsertCourse", in)
+	out := new(Course)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *coursesClient) InsertCourses(ctx context.Context, in *CourseSlice, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
@@ -116,6 +127,7 @@ func (c *coursesClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ..
 // Server API for Courses service
 
 type CoursesHandler interface {
+	UpsertCourse(context.Context, *Course, *Course) error
 	InsertCourses(context.Context, *CourseSlice, *google_protobuf1.Empty) error
 	UpdateCourses(context.Context, *CourseSlice, *UpdateCoursesRsp) error
 	FindCourses(context.Context, *FindCoursesRequest, *CourseSlice) error
@@ -128,6 +140,10 @@ func RegisterCoursesHandler(s server.Server, hdlr CoursesHandler, opts ...server
 
 type Courses struct {
 	CoursesHandler
+}
+
+func (h *Courses) UpsertCourse(ctx context.Context, in *Course, out *Course) error {
+	return h.CoursesHandler.UpsertCourse(ctx, in, out)
 }
 
 func (h *Courses) InsertCourses(ctx context.Context, in *CourseSlice, out *google_protobuf1.Empty) error {

@@ -13,6 +13,13 @@ type Courses struct {
 	DB db.Courses
 }
 
+func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.Course, rsp *pcourse.Course) (err error) {
+	if rsp, err = c.DB.UpsertCourse(req); err != nil {
+		return
+	}
+	return
+}
+
 func (c *Courses) InsertCourses(ctx context.Context, req *pcourse.CourseSlice, rsp *empty.Empty) (err error) {
 	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
 		return

@@ -8,6 +8,7 @@ import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for courses related functions.
 service Courses {
+    rpc UpsertCourse(Course) returns (Course);
 	rpc InsertCourses(CourseSlice) returns (google.protobuf.Empty);
 	rpc UpdateCourses(CourseSlice) returns (UpdateCoursesRsp);
     rpc FindCourses(FindCoursesRequest) returns (CourseSlice);
@@ -29,8 +30,6 @@ message UpdateCoursesRsp {
 message CourseSlice {
 	repeated Course courses = 1;
 }
-
-
 
 message FindCoursesRequest {
     repeated string ids = 1;

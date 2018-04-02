@@ -6,6 +6,7 @@ import (
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	"github.com/spf13/viper"
+	"github.com/y0ssar1an/q"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -141,4 +142,16 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 		return err
 	}
 	return nil
+}
+
+func (c *Courses) UpsertCourse(course *pcourse.Course) (*pcourse.Course, error) {
+	info, err := c.session.DB(c.db).C(c.collection).Upsert(
+		bson.M{"_id": course.ID},
+		bson.M{"$set": course},
+	)
+	if err != nil {
+		return nil, err
+	}
+	q.Q(info)
+	return course, nil
 }
