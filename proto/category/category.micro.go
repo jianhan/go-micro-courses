@@ -9,6 +9,8 @@ It is generated from these files:
 
 It has these top-level messages:
 	Category
+	UpsertCategoryReq
+	UpsertCategoryRsp
 	Categories
 	InsertCategoriesResponse
 	UpdateCategoriesResponse
@@ -49,6 +51,7 @@ var _ server.Option
 // Client API for CategoryService service
 
 type CategoryServiceClient interface {
+	UpsertCategory(ctx context.Context, in *UpsertCategoryReq, opts ...client.CallOption) (*UpsertCategoryRsp, error)
 	InsertCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*InsertCategoriesResponse, error)
 	UpdateCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*UpdateCategoriesResponse, error)
 	FindCategories(ctx context.Context, in *FindCategoriesRequest, opts ...client.CallOption) (*Categories, error)
@@ -71,6 +74,16 @@ func NewCategoryServiceClient(serviceName string, c client.Client) CategoryServi
 		c:           c,
 		serviceName: serviceName,
 	}
+}
+
+func (c *categoryServiceClient) UpsertCategory(ctx context.Context, in *UpsertCategoryReq, opts ...client.CallOption) (*UpsertCategoryRsp, error) {
+	req := c.c.NewRequest(c.serviceName, "CategoryService.UpsertCategory", in)
+	out := new(UpsertCategoryRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *categoryServiceClient) InsertCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*InsertCategoriesResponse, error) {
@@ -116,6 +129,7 @@ func (c *categoryServiceClient) DeleteCategoriesByIDs(ctx context.Context, in *D
 // Server API for CategoryService service
 
 type CategoryServiceHandler interface {
+	UpsertCategory(context.Context, *UpsertCategoryReq, *UpsertCategoryRsp) error
 	InsertCategories(context.Context, *Categories, *InsertCategoriesResponse) error
 	UpdateCategories(context.Context, *Categories, *UpdateCategoriesResponse) error
 	FindCategories(context.Context, *FindCategoriesRequest, *Categories) error
@@ -128,6 +142,10 @@ func RegisterCategoryServiceHandler(s server.Server, hdlr CategoryServiceHandler
 
 type CategoryService struct {
 	CategoryServiceHandler
+}
+
+func (h *CategoryService) UpsertCategory(ctx context.Context, in *UpsertCategoryReq, out *UpsertCategoryRsp) error {
+	return h.CategoryServiceHandler.UpsertCategory(ctx, in, out)
 }
 
 func (h *CategoryService) InsertCategories(ctx context.Context, in *Categories, out *InsertCategoriesResponse) error {
