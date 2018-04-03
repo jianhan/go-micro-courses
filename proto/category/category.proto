@@ -7,10 +7,11 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for categories related functions.
-service Categories {
-	rpc InsertCategories (CategorySlice) returns (InsertCategoriesResponse);
-	rpc UpdateCategories (CategorySlice) returns (UpdateCategoriesResponse);
-	rpc FindCategories (FindCategoriesRequest) returns (CategorySlice);
+service CategoryService {
+	rpc UpsertCategory (UpsertCategoryReq) returns (UpsertCategoryRsp)
+	rpc InsertCategories (Categories) returns (InsertCategoriesResponse);
+	rpc UpdateCategories (Categories) returns (UpdateCategoriesResponse);
+	rpc FindCategories (FindCategoriesRequest) returns (Categories);
 	rpc DeleteCategoriesByIDs (DeleteCategoriesByIDsRequest) returns (google.protobuf.Empty);
 }
 
@@ -32,7 +33,7 @@ message Category {
 	google.protobuf.Timestamp updated_at = 8;
 }
 
-message CategorySlice {
+message Categories {
 	repeated Category categories = 1;
 }
 

@@ -58,7 +58,7 @@ func NewMongodbCategories(session *mgo.Session) db.Categories {
 
 }
 
-func (c *Categories) InsertCategories(categories *pcategory.CategorySlice) (int64, error) {
+func (c *Categories) InsertCategories(categories *pcategory.Categories) (int64, error) {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range categories.Categories {
 		bulk.Insert(v)
@@ -70,7 +70,7 @@ func (c *Categories) InsertCategories(categories *pcategory.CategorySlice) (int6
 	return int64(r.Modified), nil
 }
 
-func (c *Categories) UpdateCategories(categories *pcategory.CategorySlice) (int64, error) {
+func (c *Categories) UpdateCategories(categories *pcategory.Categories) (int64, error) {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range categories.Categories {
 		bulk.Update(bson.M{"_id": v.ID}, v)

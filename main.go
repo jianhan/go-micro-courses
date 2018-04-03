@@ -43,7 +43,7 @@ func main() {
 			DB: mongodb.NewMongodbCourses(session),
 		},
 	)
-	pcategory.RegisterCategoriesHandler(
+	pcategory.RegisterCategoryServiceHandler(
 		srv.Server(),
 		&handler.Categories{
 			DB: mongodb.NewMongodbCategories(session),

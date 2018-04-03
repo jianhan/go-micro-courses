@@ -9,7 +9,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	Category
-	CategorySlice
+	Categories
 	InsertCategoriesResponse
 	UpdateCategoriesResponse
 	FindCategoriesRequest
@@ -46,35 +46,35 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
-// Client API for Categories service
+// Client API for CategoryService service
 
-type CategoriesClient interface {
-	InsertCategories(ctx context.Context, in *CategorySlice, opts ...client.CallOption) (*InsertCategoriesResponse, error)
-	UpdateCategories(ctx context.Context, in *CategorySlice, opts ...client.CallOption) (*UpdateCategoriesResponse, error)
-	FindCategories(ctx context.Context, in *FindCategoriesRequest, opts ...client.CallOption) (*CategorySlice, error)
+type CategoryServiceClient interface {
+	InsertCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*InsertCategoriesResponse, error)
+	UpdateCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*UpdateCategoriesResponse, error)
+	FindCategories(ctx context.Context, in *FindCategoriesRequest, opts ...client.CallOption) (*Categories, error)
 	DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, opts ...client.CallOption) (*google_protobuf1.Empty, error)
 }
 
-type categoriesClient struct {
+type categoryServiceClient struct {
 	c           client.Client
 	serviceName string
 }
 
-func NewCategoriesClient(serviceName string, c client.Client) CategoriesClient {
+func NewCategoryServiceClient(serviceName string, c client.Client) CategoryServiceClient {
 	if c == nil {
 		c = client.NewClient()
 	}
 	if len(serviceName) == 0 {
 		serviceName = "go.micro.srv.courses"
 	}
-	return &categoriesClient{
+	return &categoryServiceClient{
 		c:           c,
 		serviceName: serviceName,
 	}
 }
 
-func (c *categoriesClient) InsertCategories(ctx context.Context, in *CategorySlice, opts ...client.CallOption) (*InsertCategoriesResponse, error) {
-	req := c.c.NewRequest(c.serviceName, "Categories.InsertCategories", in)
+func (c *categoryServiceClient) InsertCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*InsertCategoriesResponse, error) {
+	req := c.c.NewRequest(c.serviceName, "CategoryService.InsertCategories", in)
 	out := new(InsertCategoriesResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -83,8 +83,8 @@ func (c *categoriesClient) InsertCategories(ctx context.Context, in *CategorySli
 	return out, nil
 }
 
-func (c *categoriesClient) UpdateCategories(ctx context.Context, in *CategorySlice, opts ...client.CallOption) (*UpdateCategoriesResponse, error) {
-	req := c.c.NewRequest(c.serviceName, "Categories.UpdateCategories", in)
+func (c *categoryServiceClient) UpdateCategories(ctx context.Context, in *Categories, opts ...client.CallOption) (*UpdateCategoriesResponse, error) {
+	req := c.c.NewRequest(c.serviceName, "CategoryService.UpdateCategories", in)
 	out := new(UpdateCategoriesResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -93,9 +93,9 @@ func (c *categoriesClient) UpdateCategories(ctx context.Context, in *CategorySli
 	return out, nil
 }
 
-func (c *categoriesClient) FindCategories(ctx context.Context, in *FindCategoriesRequest, opts ...client.CallOption) (*CategorySlice, error) {
-	req := c.c.NewRequest(c.serviceName, "Categories.FindCategories", in)
-	out := new(CategorySlice)
+func (c *categoryServiceClient) FindCategories(ctx context.Context, in *FindCategoriesRequest, opts ...client.CallOption) (*Categories, error) {
+	req := c.c.NewRequest(c.serviceName, "CategoryService.FindCategories", in)
+	out := new(Categories)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -103,8 +103,8 @@ func (c *categoriesClient) FindCategories(ctx context.Context, in *FindCategorie
 	return out, nil
 }
 
-func (c *categoriesClient) DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
-	req := c.c.NewRequest(c.serviceName, "Categories.DeleteCategoriesByIDs", in)
+func (c *categoryServiceClient) DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
+	req := c.c.NewRequest(c.serviceName, "CategoryService.DeleteCategoriesByIDs", in)
 	out := new(google_protobuf1.Empty)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -113,35 +113,35 @@ func (c *categoriesClient) DeleteCategoriesByIDs(ctx context.Context, in *Delete
 	return out, nil
 }
 
-// Server API for Categories service
+// Server API for CategoryService service
 
-type CategoriesHandler interface {
-	InsertCategories(context.Context, *CategorySlice, *InsertCategoriesResponse) error
-	UpdateCategories(context.Context, *CategorySlice, *UpdateCategoriesResponse) error
-	FindCategories(context.Context, *FindCategoriesRequest, *CategorySlice) error
+type CategoryServiceHandler interface {
+	InsertCategories(context.Context, *Categories, *InsertCategoriesResponse) error
+	UpdateCategories(context.Context, *Categories, *UpdateCategoriesResponse) error
+	FindCategories(context.Context, *FindCategoriesRequest, *Categories) error
 	DeleteCategoriesByIDs(context.Context, *DeleteCategoriesByIDsRequest, *google_protobuf1.Empty) error
 }
 
-func RegisterCategoriesHandler(s server.Server, hdlr CategoriesHandler, opts ...server.HandlerOption) {
-	s.Handle(s.NewHandler(&Categories{hdlr}, opts...))
+func RegisterCategoryServiceHandler(s server.Server, hdlr CategoryServiceHandler, opts ...server.HandlerOption) {
+	s.Handle(s.NewHandler(&CategoryService{hdlr}, opts...))
 }
 
-type Categories struct {
-	CategoriesHandler
+type CategoryService struct {
+	CategoryServiceHandler
 }
 
-func (h *Categories) InsertCategories(ctx context.Context, in *CategorySlice, out *InsertCategoriesResponse) error {
-	return h.CategoriesHandler.InsertCategories(ctx, in, out)
+func (h *CategoryService) InsertCategories(ctx context.Context, in *Categories, out *InsertCategoriesResponse) error {
+	return h.CategoryServiceHandler.InsertCategories(ctx, in, out)
 }
 
-func (h *Categories) UpdateCategories(ctx context.Context, in *CategorySlice, out *UpdateCategoriesResponse) error {
-	return h.CategoriesHandler.UpdateCategories(ctx, in, out)
+func (h *CategoryService) UpdateCategories(ctx context.Context, in *Categories, out *UpdateCategoriesResponse) error {
+	return h.CategoryServiceHandler.UpdateCategories(ctx, in, out)
 }
 
-func (h *Categories) FindCategories(ctx context.Context, in *FindCategoriesRequest, out *CategorySlice) error {
-	return h.CategoriesHandler.FindCategories(ctx, in, out)
+func (h *CategoryService) FindCategories(ctx context.Context, in *FindCategoriesRequest, out *Categories) error {
+	return h.CategoryServiceHandler.FindCategories(ctx, in, out)
 }
 
-func (h *Categories) DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, out *google_protobuf1.Empty) error {
-	return h.CategoriesHandler.DeleteCategoriesByIDs(ctx, in, out)
+func (h *CategoryService) DeleteCategoriesByIDs(ctx context.Context, in *DeleteCategoriesByIDsRequest, out *google_protobuf1.Empty) error {
+	return h.CategoryServiceHandler.DeleteCategoriesByIDs(ctx, in, out)
 }

@@ -16,7 +16,7 @@ type Categories struct {
 	DB db.Categories
 }
 
-func (c *Categories) InsertCategories(ctx context.Context, req *pcategory.CategorySlice, rsp *pcategory.InsertCategoriesResponse) (err error) {
+func (c *Categories) InsertCategories(ctx context.Context, req *pcategory.Categories, rsp *pcategory.InsertCategoriesResponse) (err error) {
 	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
 		return
 	}
@@ -26,7 +26,7 @@ func (c *Categories) InsertCategories(ctx context.Context, req *pcategory.Catego
 	return
 }
 
-func (c *Categories) UpdateCategories(ctx context.Context, req *pcategory.CategorySlice, rsp *pcategory.UpdateCategoriesResponse) (err error) {
+func (c *Categories) UpdateCategories(ctx context.Context, req *pcategory.Categories, rsp *pcategory.UpdateCategoriesResponse) (err error) {
 	if err = req.GenerateSlugs().GenerateCreatedUpdated().Validate(); err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (c *Categories) UpdateCategories(ctx context.Context, req *pcategory.Catego
 	return
 }
 
-func (c *Categories) FindCategories(ctx context.Context, req *pcategory.FindCategoriesRequest, rsp *pcategory.CategorySlice) (err error) {
+func (c *Categories) FindCategories(ctx context.Context, req *pcategory.FindCategoriesRequest, rsp *pcategory.Categories) (err error) {
 	if err = req.Validate(); err != nil {
 		return err
 	}
