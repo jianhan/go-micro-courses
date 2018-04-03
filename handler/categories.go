@@ -16,6 +16,16 @@ type Categories struct {
 	DB db.Categories
 }
 
+func (c *Categories) UpsertCategory(ctx context.Context, req *pcategory.UpsertCategoryReq, rsp *pcategory.UpsertCategoryRsp) (err error) {
+	if err = req.Validate(); err != nil {
+		return
+	}
+	if rsp.Category, err = c.DB.UpsertCategory(req.Catetory); err != nil {
+		return
+	}
+	return
+}
+
 func (c *Categories) InsertCategories(ctx context.Context, req *pcategory.Categories, rsp *pcategory.InsertCategoriesResponse) (err error) {
 	if err = req.GenerateIDs().GenerateCreatedUpdated().GenerateSlugs().Validate(); err != nil {
 		return

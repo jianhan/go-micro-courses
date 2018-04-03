@@ -61,6 +61,17 @@ func NewMongodbCourses(session *mgo.Session) db.Courses {
 	}
 }
 
+func (c *Courses) UpsertCourse(course *pcourse.Course) (*pcourse.Course, error) {
+	_, err := c.session.DB(c.db).C(c.collection).Upsert(
+		bson.M{"_id": course.ID},
+		bson.M{"$set": course},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return course, nil
+}
+
 func (c *Courses) InsertCourses(cs *pcourse.Courses) error {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range cs.Courses {
@@ -141,15 +152,4 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 		return err
 	}
 	return nil
-}
-
-func (c *Courses) UpsertCourse(course *pcourse.Course) (*pcourse.Course, error) {
-	_, err := c.session.DB(c.db).C(c.collection).Upsert(
-		bson.M{"_id": course.ID},
-		bson.M{"$set": course},
-	)
-	if err != nil {
-		return nil, err
-	}
-	return course, nil
 }

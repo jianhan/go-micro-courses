@@ -58,6 +58,17 @@ func NewMongodbCategories(session *mgo.Session) db.Categories {
 
 }
 
+func (c *Categories) UpsertCategory(category *pcategory.Category) (*pcategory.Category, error) {
+	_, err := c.session.DB(c.db).C(c.collection).Upsert(
+		bson.M{"_id": category.ID},
+		bson.M{"$set": category},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return category, nil
+}
+
 func (c *Categories) InsertCategories(categories *pcategory.Categories) (int64, error) {
 	bulk := c.session.DB(c.db).C(c.collection).Bulk()
 	for _, v := range categories.Categories {
