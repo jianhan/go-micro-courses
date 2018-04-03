@@ -3,6 +3,9 @@ package mongodb
 import (
 	"strings"
 
+	"time"
+
+	"github.com/golang/protobuf/ptypes"
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	"github.com/spf13/viper"
@@ -145,6 +148,11 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 }
 
 func (c *Courses) UpsertCourse(course *pcourse.Course) (*pcourse.Course, error) {
+	n, err := ptypes.TimestampProto(time.Now())
+	if err != nil {
+		return nil, err
+	}
+	course.UpdatedAt = n
 	info, err := c.session.DB(c.db).C(c.collection).Upsert(
 		bson.M{"_id": course.ID},
 		bson.M{"$set": course},

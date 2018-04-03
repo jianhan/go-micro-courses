@@ -3,6 +3,9 @@ package handler
 import (
 	"context"
 
+	"time"
+
+	"github.com/golang/protobuf/ptypes"
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 )
@@ -13,6 +16,13 @@ type Courses struct {
 }
 
 func (c *Courses) UpsertCourse(ctx context.Context, req *pcourse.UpsertCourseReq, rsp *pcourse.UpsertCourseRsp) (err error) {
+	if req.IsNew {
+		n, err := ptypes.TimestampProto(time.Now())
+		if err != nil {
+			return err
+		}
+		req.Course.CreatedAt = n
+	}
 	if rsp.Course, err = c.DB.UpsertCourse(req.Course); err != nil {
 		return
 	}

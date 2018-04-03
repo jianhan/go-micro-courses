@@ -16,6 +16,7 @@ service CourseService {
 
 message UpsertCourseReq {
 	Course course = 1;
+	bool is_new = 2;
 }
 
 message UpsertCourseRsp {
