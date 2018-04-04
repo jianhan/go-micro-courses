@@ -68,21 +68,21 @@ message FindCoursesReq {
     int64 current_page = 9;
 }
 
-message CourseCategories {
+message CourseAndCategories {
     string course_id = 1;
     repeated string category_ids = 2;
 }
 
 message SyncCategoriesReq {
-    repeated CourseCategories course_categories = 1;
+    repeated CourseAndCategories course_and_categories = 1;
 }
 
 message AddCategoriesReq {
-    repeated CourseCategories course_categories = 1;
+    repeated CourseAndCategories course_and_categories = 1;
 }
 
 message DeleteCategoriesReq {
-    repeated CourseCategories course_categories = 1;
+    repeated CourseAndCategories course_and_categories = 1;
 }
 
 message PurgeCategoriesReq {

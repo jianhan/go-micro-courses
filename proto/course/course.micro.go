@@ -17,7 +17,7 @@ It has these top-level messages:
 	FindCoursesRsp
 	Courses
 	FindCoursesReq
-	CourseCategories
+	CourseAndCategories
 	SyncCategoriesReq
 	AddCategoriesReq
 	DeleteCategoriesReq
