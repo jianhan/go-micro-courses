@@ -66,3 +66,31 @@ func (c *Courses) DeleteCoursesByIDs(ctx context.Context, req *pcourse.IDs, rsp 
 	}
 	return nil
 }
+
+func (c *Courses) SyncCategories(ctx context.Context, req *pcourse.SyncCategoriesReq, rsp *pcourse.Courses) (err error) {
+	if rsp, err = c.DB.SyncCategories(req); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Courses) AddCategories(ctx context.Context, req *pcourse.AddCategoriesReq, rsp *pcourse.Courses) (err error) {
+	if rsp, err = c.DB.AddCategories(req); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Courses) DeleteCategories(ctx context.Context, req *pcourse.DeleteCategoriesReq, rsp *pcourse.Courses) (err error) {
+	if rsp, err = c.DB.DeleteCategories(req); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Courses) PurgeCategories(ctx context.Context, req *pcourse.PurgeCategoriesReq, rsp *pcourse.Courses) (err error) {
+	if rsp, err = c.DB.PurgeCategories(req); err != nil {
+		return err
+	}
+	return nil
+}
