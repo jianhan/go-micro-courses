@@ -11,11 +11,12 @@ import (
 )
 
 type Courses struct {
-	session     *mgo.Session
-	db          string
-	collection  string
-	perPage     int
-	currentPage int
+	session      *mgo.Session
+	db           string
+	collection   string
+	perPage      int
+	currentPage  int
+	defaultSorts []string
 }
 
 func NewMongodbCourses(session *mgo.Session) db.Courses {
@@ -53,11 +54,12 @@ func NewMongodbCourses(session *mgo.Session) db.Courses {
 		panic(err)
 	}
 	return &Courses{
-		session:     session,
-		db:          viper.GetString("mongodb.db"),
-		collection:  collection,
-		perPage:     10,
-		currentPage: 1,
+		session:      session,
+		db:           viper.GetString("mongodb.db"),
+		collection:   collection,
+		perPage:      10,
+		currentPage:  1,
+		defaultSorts: []string{"display_order", "name"},
 	}
 }
 
@@ -128,7 +130,7 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesReq) (*pcourse.Courses, er
 		query["$text"] = bson.M{"$search": req.Query}
 	}
 	// set sort condition
-	sorts := []string{"display_order", "name"}
+	sorts := c.defaultSorts
 	if req.Sort != nil {
 		sorts = req.Sort
 	}
@@ -161,7 +163,7 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Courses, error) {
 	sem := make(chan bool, len(req.CourseAndCategories))
 	bulk := c.getCollection().Bulk()
-	courseIDs, sorts := []string{}, []string{"display_order", "name"}
+	courseIDs := []string{}
 	var r []*pcourse.Course
 	for _, v := range req.CourseAndCategories {
 		courseIDs = append(courseIDs, v.CourseId)
@@ -174,7 +176,7 @@ func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Cours
 	if _, err := bulk.Run(); err != nil {
 		return nil, err
 	}
-	if err := c.getCollection().Find(bson.M{"_id": bson.M{"$in": courseIDs}}).Sort(sorts...).All(&r); err != nil {
+	if err := c.getCollection().Find(bson.M{"_id": bson.M{"$in": courseIDs}}).Sort(c.defaultSorts...).All(&r); err != nil {
 		return nil, err
 	}
 	return &pcourse.Courses{Courses: r}, nil
