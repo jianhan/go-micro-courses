@@ -30,7 +30,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
-import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
+import _ "github.com/golang/protobuf/ptypes/empty"
 
 import (
 	client "github.com/micro/go-micro/client"
@@ -42,7 +42,6 @@ import (
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = google_protobuf1.Empty{}
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -68,7 +67,7 @@ type CourseServiceClient interface {
 	SyncCategories(ctx context.Context, in *SyncCategoriesReq, opts ...client.CallOption) (*Courses, error)
 	AddCategories(ctx context.Context, in *AddCategoriesReq, opts ...client.CallOption) (*Courses, error)
 	DeleteCategories(ctx context.Context, in *DeleteCategoriesReq, opts ...client.CallOption) (*Courses, error)
-	PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, opts ...client.CallOption) (*google_protobuf1.Empty, error)
+	PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, opts ...client.CallOption) (*Courses, error)
 }
 
 type courseServiceClient struct {
@@ -169,9 +168,9 @@ func (c *courseServiceClient) DeleteCategories(ctx context.Context, in *DeleteCa
 	return out, nil
 }
 
-func (c *courseServiceClient) PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
+func (c *courseServiceClient) PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, opts ...client.CallOption) (*Courses, error) {
 	req := c.c.NewRequest(c.serviceName, "CourseService.PurgeCategories", in)
-	out := new(google_protobuf1.Empty)
+	out := new(Courses)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -192,7 +191,7 @@ type CourseServiceHandler interface {
 	SyncCategories(context.Context, *SyncCategoriesReq, *Courses) error
 	AddCategories(context.Context, *AddCategoriesReq, *Courses) error
 	DeleteCategories(context.Context, *DeleteCategoriesReq, *Courses) error
-	PurgeCategories(context.Context, *PurgeCategoriesReq, *google_protobuf1.Empty) error
+	PurgeCategories(context.Context, *PurgeCategoriesReq, *Courses) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) {
@@ -235,6 +234,6 @@ func (h *CourseService) DeleteCategories(ctx context.Context, in *DeleteCategori
 	return h.CourseServiceHandler.DeleteCategories(ctx, in, out)
 }
 
-func (h *CourseService) PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, out *google_protobuf1.Empty) error {
+func (h *CourseService) PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, out *Courses) error {
 	return h.CourseServiceHandler.PurgeCategories(ctx, in, out)
 }

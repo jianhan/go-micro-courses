@@ -18,7 +18,7 @@ service CourseService {
     rpc SyncCategories (SyncCategoriesReq) returns (Courses);
     rpc AddCategories (AddCategoriesReq) returns (Courses);
     rpc DeleteCategories (DeleteCategoriesReq) returns (Courses);
-    rpc PurgeCategories (PurgeCategoriesReq) returns (google.protobuf.Empty);
+    rpc PurgeCategories (PurgeCategoriesReq) returns (Courses);
 }
 
 message UpsertCourseReq {

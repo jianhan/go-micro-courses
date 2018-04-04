@@ -160,16 +160,18 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 	return nil
 }
 
-func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Courses, error) {
-	sem := make(chan bool, len(req.CourseAndCategories))
+func (c *Courses) categoriesDecorator(f func() []*pcourse.CourseAndCategories, bkf func(bk *mgo.Bulk, courseId string, categoryIDs []string)) (*pcourse.Courses, error) {
+	courseAndCategories := f()
+	sem := make(chan bool, len(courseAndCategories))
 	bulk := c.getCollection().Bulk()
 	courseIDs := []string{}
 	var r []*pcourse.Course
-	for _, v := range req.CourseAndCategories {
+	for _, v := range courseAndCategories {
 		courseIDs = append(courseIDs, v.CourseId)
 		sem <- true
 		go func(cacs *pcourse.CourseAndCategories) {
-			bulk.Update(bson.M{"_id": v.CourseId}, bson.M{"category_ids": cacs.CategoryIds})
+			//bk.Update(bson.M{"_id": v.CourseId}, bson.M{"category_ids": cacs.CategoryIds})
+			bkf(bulk, v.CourseId, v.CategoryIds)
 			<-sem
 		}(v)
 	}
@@ -182,24 +184,24 @@ func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Cours
 	return &pcourse.Courses{Courses: r}, nil
 }
 
+func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Courses, error) {
+	bulkFunc := func(bk *mgo.Bulk, courseId string, categoryIds []string) {
+		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": categoryIds})
+	}
+	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
+	if err != nil {
+		return nil, err
+	}
+	return cs, nil
+}
+
 func (c *Courses) AddCategories(req *pcourse.AddCategoriesReq) (*pcourse.Courses, error) {
-	sem := make(chan bool, len(req.CourseAndCategories))
-	bulk := c.getCollection().Bulk()
-	courseIDs := []string{}
-	var r []*pcourse.Course
-	for _, v := range req.CourseAndCategories {
-		courseIDs = append(courseIDs, v.CourseId)
-		sem <- true
-		go func(cacs *pcourse.CourseAndCategories) {
-			bulk.Update(bson.M{"_id": v.CourseId}, bson.M{"category_ids": bson.M{"$push": bson.M{"$each": cacs.CategoryIds}}})
-			<-sem
-		}(v)
+	bulkFunc := func(bk *mgo.Bulk, courseId string, categoryIds []string) {
+		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": bson.M{"$push": bson.M{"$each": categoryIds}}})
 	}
-	if _, err := bulk.Run(); err != nil {
+	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
+	if err != nil {
 		return nil, err
 	}
-	if err := c.getCollection().Find(bson.M{"_id": bson.M{"$in": courseIDs}}).Sort(c.defaultSorts...).All(&r); err != nil {
-		return nil, err
-	}
-	return &pcourse.Courses{Courses: r}, nil
+	return cs, nil
 }
