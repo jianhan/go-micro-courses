@@ -4,14 +4,21 @@ package go.micro.srv.courses;
 option go_package="course";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 // Service declares all RPC calls for courses related functions.
 service CourseService {
+	// Course related rpcs
 	rpc UpsertCourse (UpsertCourseReq) returns (UpsertCourseRsp);
 	rpc InsertCourses (Courses) returns (InsertCoursesRsp);
 	rpc UpdateCourses (Courses) returns (UpdateCoursesRsp);
 	rpc FindCourses (FindCoursesReq) returns (FindCoursesRsp);
 	rpc DeleteCoursesByIDs (IDs) returns (DeleteCoursesRsp);
+    // Category related rpcs
+    rpc SyncCategories (SyncCategoriesReq) returns (Courses);
+    rpc AddCategories (AddCategoriesReq) returns (Courses);
+    rpc DeleteCategories (DeleteCategoriesReq) returns (Courses);
+    rpc PurgeCategories (PurgeCategoriesReq) returns (google.protobuf.Empty);
 }
 
 message UpsertCourseReq {
@@ -59,6 +66,27 @@ message FindCoursesReq {
     repeated string sort = 7;
     int64 per_page = 8;
     int64 current_page = 9;
+}
+
+message CourseCategories {
+    string course_id = 1;
+    repeated string category_ids = 2;
+}
+
+message SyncCategoriesReq {
+    repeated CourseCategories course_categories = 1;
+}
+
+message AddCategoriesReq {
+    repeated CourseCategories course_categories = 1;
+}
+
+message DeleteCategoriesReq {
+    repeated CourseCategories course_categories = 1;
+}
+
+message PurgeCategoriesReq {
+	repeated string course_ids = 1;
 }
 
 // Course defines data structure of Course.

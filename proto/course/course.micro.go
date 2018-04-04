@@ -17,6 +17,11 @@ It has these top-level messages:
 	FindCoursesRsp
 	Courses
 	FindCoursesReq
+	CourseCategories
+	SyncCategoriesReq
+	AddCategoriesReq
+	DeleteCategoriesReq
+	PurgeCategoriesReq
 	Course
 */
 package course
@@ -25,6 +30,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
+import google_protobuf1 "github.com/golang/protobuf/ptypes/empty"
 
 import (
 	client "github.com/micro/go-micro/client"
@@ -36,6 +42,7 @@ import (
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = google_protobuf1.Empty{}
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -51,11 +58,17 @@ var _ server.Option
 // Client API for CourseService service
 
 type CourseServiceClient interface {
+	// Course related rpcs
 	UpsertCourse(ctx context.Context, in *UpsertCourseReq, opts ...client.CallOption) (*UpsertCourseRsp, error)
 	InsertCourses(ctx context.Context, in *Courses, opts ...client.CallOption) (*InsertCoursesRsp, error)
 	UpdateCourses(ctx context.Context, in *Courses, opts ...client.CallOption) (*UpdateCoursesRsp, error)
 	FindCourses(ctx context.Context, in *FindCoursesReq, opts ...client.CallOption) (*FindCoursesRsp, error)
 	DeleteCoursesByIDs(ctx context.Context, in *IDs, opts ...client.CallOption) (*DeleteCoursesRsp, error)
+	// Category related rpcs
+	SyncCategories(ctx context.Context, in *SyncCategoriesReq, opts ...client.CallOption) (*Courses, error)
+	AddCategories(ctx context.Context, in *AddCategoriesReq, opts ...client.CallOption) (*Courses, error)
+	DeleteCategories(ctx context.Context, in *DeleteCategoriesReq, opts ...client.CallOption) (*Courses, error)
+	PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, opts ...client.CallOption) (*google_protobuf1.Empty, error)
 }
 
 type courseServiceClient struct {
@@ -126,14 +139,60 @@ func (c *courseServiceClient) DeleteCoursesByIDs(ctx context.Context, in *IDs, o
 	return out, nil
 }
 
+func (c *courseServiceClient) SyncCategories(ctx context.Context, in *SyncCategoriesReq, opts ...client.CallOption) (*Courses, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.SyncCategories", in)
+	out := new(Courses)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseServiceClient) AddCategories(ctx context.Context, in *AddCategoriesReq, opts ...client.CallOption) (*Courses, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.AddCategories", in)
+	out := new(Courses)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseServiceClient) DeleteCategories(ctx context.Context, in *DeleteCategoriesReq, opts ...client.CallOption) (*Courses, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.DeleteCategories", in)
+	out := new(Courses)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseServiceClient) PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, opts ...client.CallOption) (*google_protobuf1.Empty, error) {
+	req := c.c.NewRequest(c.serviceName, "CourseService.PurgeCategories", in)
+	out := new(google_protobuf1.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
+	// Course related rpcs
 	UpsertCourse(context.Context, *UpsertCourseReq, *UpsertCourseRsp) error
 	InsertCourses(context.Context, *Courses, *InsertCoursesRsp) error
 	UpdateCourses(context.Context, *Courses, *UpdateCoursesRsp) error
 	FindCourses(context.Context, *FindCoursesReq, *FindCoursesRsp) error
 	DeleteCoursesByIDs(context.Context, *IDs, *DeleteCoursesRsp) error
+	// Category related rpcs
+	SyncCategories(context.Context, *SyncCategoriesReq, *Courses) error
+	AddCategories(context.Context, *AddCategoriesReq, *Courses) error
+	DeleteCategories(context.Context, *DeleteCategoriesReq, *Courses) error
+	PurgeCategories(context.Context, *PurgeCategoriesReq, *google_protobuf1.Empty) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) {
@@ -162,4 +221,20 @@ func (h *CourseService) FindCourses(ctx context.Context, in *FindCoursesReq, out
 
 func (h *CourseService) DeleteCoursesByIDs(ctx context.Context, in *IDs, out *DeleteCoursesRsp) error {
 	return h.CourseServiceHandler.DeleteCoursesByIDs(ctx, in, out)
+}
+
+func (h *CourseService) SyncCategories(ctx context.Context, in *SyncCategoriesReq, out *Courses) error {
+	return h.CourseServiceHandler.SyncCategories(ctx, in, out)
+}
+
+func (h *CourseService) AddCategories(ctx context.Context, in *AddCategoriesReq, out *Courses) error {
+	return h.CourseServiceHandler.AddCategories(ctx, in, out)
+}
+
+func (h *CourseService) DeleteCategories(ctx context.Context, in *DeleteCategoriesReq, out *Courses) error {
+	return h.CourseServiceHandler.DeleteCategories(ctx, in, out)
+}
+
+func (h *CourseService) PurgeCategories(ctx context.Context, in *PurgeCategoriesReq, out *google_protobuf1.Empty) error {
+	return h.CourseServiceHandler.PurgeCategories(ctx, in, out)
 }
