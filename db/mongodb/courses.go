@@ -61,8 +61,12 @@ func NewMongodbCourses(session *mgo.Session) db.Courses {
 	}
 }
 
+func (c *Courses) getCollection() *mgo.Collection {
+	return c.session.DB(c.db).C(c.collection)
+}
+
 func (c *Courses) UpsertCourse(course *pcourse.Course) (*pcourse.Course, error) {
-	_, err := c.session.DB(c.db).C(c.collection).Upsert(
+	_, err := c.getCollection().Upsert(
 		bson.M{"_id": course.ID},
 		bson.M{"$set": course},
 	)
@@ -73,7 +77,7 @@ func (c *Courses) UpsertCourse(course *pcourse.Course) (*pcourse.Course, error) 
 }
 
 func (c *Courses) InsertCourses(cs *pcourse.Courses) error {
-	bulk := c.session.DB(c.db).C(c.collection).Bulk()
+	bulk := c.getCollection().Bulk()
 	for _, v := range cs.Courses {
 		bulk.Insert(v)
 	}
@@ -85,7 +89,7 @@ func (c *Courses) InsertCourses(cs *pcourse.Courses) error {
 }
 
 func (c *Courses) UpdateCourses(cs *pcourse.Courses) (modified int, err error) {
-	bulk := c.session.DB(c.db).C(c.collection).Bulk()
+	bulk := c.getCollection().Bulk()
 	for _, v := range cs.Courses {
 		bulk.Update(bson.M{"_id": v.ID}, v)
 	}
@@ -138,7 +142,7 @@ func (c *Courses) FindCourses(req *pcourse.FindCoursesReq) (*pcourse.Courses, er
 		perPage = int(req.PerPage)
 	}
 	// get result
-	if err := c.session.DB(c.db).C(c.collection).Find(query).Sort(sorts...).Skip(perPage * (currentPage - 1)).Limit(perPage).All(&r); err != nil {
+	if err := c.getCollection().Find(query).Sort(sorts...).Skip(perPage * (currentPage - 1)).Limit(perPage).All(&r); err != nil {
 		return nil, err
 	}
 	return &pcourse.Courses{Courses: r}, nil
@@ -148,8 +152,30 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 	if len(ids) == 0 {
 		return nil
 	}
-	if err := c.session.DB(c.db).C(c.collection).Remove(bson.M{"_id": bson.M{"$in": ids}}); err != nil {
+	if err := c.getCollection().Remove(bson.M{"_id": bson.M{"$in": ids}}); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Courses, error) {
+	sem := make(chan bool, len(req.CourseAndCategories))
+	bulk := c.getCollection().Bulk()
+	courseIDs, sorts := []string{}, []string{"display_order", "name"}
+	var r []*pcourse.Course
+	for _, v := range req.CourseAndCategories {
+		courseIDs = append(courseIDs, v.CourseId)
+		sem <- true
+		go func(cacs *pcourse.CourseAndCategories) {
+			bulk.Update(bson.M{"_id": v.CourseId}, bson.M{"category_ids": cacs.CategoryIds})
+			<-sem
+		}(v)
+	}
+	if _, err := bulk.Run(); err != nil {
+		return nil, err
+	}
+	if err := c.getCollection().Find(bson.M{"_id": bson.M{"$in": courseIDs}}).Sort(sorts...).All(&r); err != nil {
+		return nil, err
+	}
+	return &pcourse.Courses{Courses: r}, nil
 }
