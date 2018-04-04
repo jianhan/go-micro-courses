@@ -86,7 +86,7 @@ message DeleteCategoriesReq {
 }
 
 message PurgeCategoriesReq {
-	repeated string course_ids = 1;
+    repeated CourseAndCategories course_and_categories = 1;
 }
 
 // Course defines data structure of Course.

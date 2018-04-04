@@ -205,3 +205,25 @@ func (c *Courses) AddCategories(req *pcourse.AddCategoriesReq) (*pcourse.Courses
 	}
 	return cs, nil
 }
+
+func (c *Courses) DeleteCategories(req *pcourse.DeleteCategoriesReq) (*pcourse.Courses, error) {
+	bulkFunc := func(bk *mgo.Bulk, courseId string, categoryIds []string) {
+		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": bson.M{"$pull": bson.M{"$in": categoryIds}}})
+	}
+	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
+	if err != nil {
+		return nil, err
+	}
+	return cs, nil
+}
+
+func (c *Courses) PurgeCategories(req *pcourse.PurgeCategoriesReq) (*pcourse.Courses, error) {
+	bulkFunc := func(bk *mgo.Bulk, courseId string, _ []string) {
+		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": []string{}})
+	}
+	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
+	if err != nil {
+		return nil, err
+	}
+	return cs, nil
+}

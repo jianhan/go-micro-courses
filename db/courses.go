@@ -15,5 +15,5 @@ type Courses interface {
 	SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Courses, error)
 	AddCategories(req *pcourse.AddCategoriesReq) (*pcourse.Courses, error)
 	DeleteCategories(req *pcourse.DeleteCategoriesReq) (*pcourse.Courses, error)
-	PurgeCategories(req *pcourse.PurgeCategoriesReq) error
+	PurgeCategories(req *pcourse.PurgeCategoriesReq) (*pcourse.Courses, error)
 }
