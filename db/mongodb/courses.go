@@ -218,7 +218,7 @@ func (c *Courses) AddCategories(req *pcourse.AddCategoriesReq) (*pcourse.Courses
 
 func (c *Courses) DeleteCategories(req *pcourse.DeleteCategoriesReq) (*pcourse.Courses, error) {
 	bulkFunc := func(bk *mgo.Bulk, courseId string, categoryIds []string) {
-		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": bson.M{"$pull": bson.M{"$in": categoryIds}}})
+		bk.Update(bson.M{"_id": courseId}, bson.M{"$pull": bson.M{"category_ids": bson.M{"$in": categoryIds}}})
 	}
 	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
 	if err != nil {
