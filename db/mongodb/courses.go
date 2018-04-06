@@ -3,6 +3,8 @@ package mongodb
 import (
 	"strings"
 
+	"sync"
+
 	"github.com/jianhan/go-micro-courses/db"
 	pcourse "github.com/jianhan/go-micro-courses/proto/course"
 	"github.com/spf13/viper"
@@ -162,19 +164,27 @@ func (c *Courses) DeleteCoursesByIDs(ids []string) error {
 
 func (c *Courses) categoriesDecorator(f func() []*pcourse.CourseAndCategories, bkf func(bk *mgo.Bulk, courseId string, categoryIDs []string)) (*pcourse.Courses, error) {
 	courseAndCategories := f()
-	sem := make(chan bool, len(courseAndCategories))
 	bulk := c.getCollection().Bulk()
 	courseIDs := []string{}
 	var r []*pcourse.Course
+	// a blocking channel to keep concurrency under control
+	semaphoreChan := make(chan struct{}, 5)
+	defer close(semaphoreChan)
+	// a wait group enables the main process a wait for goroutines to finish
+	wg := sync.WaitGroup{}
 	for _, v := range courseAndCategories {
 		courseIDs = append(courseIDs, v.CourseId)
-		sem <- true
+		// increment the wait group internal counter
+		wg.Add(1)
 		go func(cacs *pcourse.CourseAndCategories) {
-			//bk.Update(bson.M{"_id": v.CourseId}, bson.M{"category_ids": cacs.CategoryIds})
+			defer wg.Done()
+			semaphoreChan <- struct{}{}
 			bkf(bulk, v.CourseId, v.CategoryIds)
-			<-sem
+			<-semaphoreChan
 		}(v)
 	}
+	// wait for all the goroutines to be done
+	wg.Wait()
 	if _, err := bulk.Run(); err != nil {
 		return nil, err
 	}
@@ -186,7 +196,7 @@ func (c *Courses) categoriesDecorator(f func() []*pcourse.CourseAndCategories, b
 
 func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Courses, error) {
 	bulkFunc := func(bk *mgo.Bulk, courseId string, categoryIds []string) {
-		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": categoryIds})
+		bk.Update(bson.M{"_id": courseId}, bson.M{"$set": bson.M{"category_ids": categoryIds}})
 	}
 	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
 	if err != nil {
@@ -219,7 +229,7 @@ func (c *Courses) DeleteCategories(req *pcourse.DeleteCategoriesReq) (*pcourse.C
 
 func (c *Courses) PurgeCategories(req *pcourse.PurgeCategoriesReq) (*pcourse.Courses, error) {
 	bulkFunc := func(bk *mgo.Bulk, courseId string, _ []string) {
-		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": []string{}})
+		bk.Update(bson.M{"_id": courseId}, bson.M{"$set": bson.M{"category_ids": []string{}}})
 	}
 	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
 	if err != nil {
