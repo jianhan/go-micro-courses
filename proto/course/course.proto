@@ -69,6 +69,7 @@ message FindCoursesReq {
 }
 
 message CourseAndCategories {
+    // @inject_tag: valid:"uuid,required~ID is required"
     string course_id = 1;
     repeated string category_ids = 2;
 }

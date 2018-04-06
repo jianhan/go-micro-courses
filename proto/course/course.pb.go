@@ -276,7 +276,8 @@ func (m *FindCoursesReq) GetCurrentPage() int64 {
 }
 
 type CourseAndCategories struct {
-	CourseId    string   `protobuf:"bytes,1,opt,name=course_id,json=courseId" json:"course_id,omitempty"`
+	// @inject_tag: valid:"uuid,required~ID is required"
+	CourseId    string   `protobuf:"bytes,1,opt,name=course_id,json=courseId" json:"course_id,omitempty" valid:"uuid,required~ID is required"`
 	CategoryIds []string `protobuf:"bytes,2,rep,name=category_ids,json=categoryIds" json:"category_ids,omitempty"`
 }
 
