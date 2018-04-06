@@ -207,7 +207,7 @@ func (c *Courses) SyncCategories(req *pcourse.SyncCategoriesReq) (*pcourse.Cours
 
 func (c *Courses) AddCategories(req *pcourse.AddCategoriesReq) (*pcourse.Courses, error) {
 	bulkFunc := func(bk *mgo.Bulk, courseId string, categoryIds []string) {
-		bk.Update(bson.M{"_id": courseId}, bson.M{"category_ids": bson.M{"$push": bson.M{"$each": categoryIds}}})
+		bk.Update(bson.M{"_id": courseId}, bson.M{"$addToSet": bson.M{"category_ids": bson.M{"$each": categoryIds}}})
 	}
 	cs, err := c.categoriesDecorator(req.GetCourseAndCategories, bulkFunc)
 	if err != nil {
