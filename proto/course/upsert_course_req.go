@@ -5,6 +5,8 @@ import (
 
 	"time"
 
+	"fmt"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/gosimple/slug"
@@ -36,6 +38,12 @@ func (r *UpsertCourseReq) Validate() error {
 	}
 	if _, err := govalidator.ValidateStruct(r.Course); err != nil {
 		return err
+	}
+	// validate category IDs
+	for _, v := range r.Course.CategoryIds {
+		if !govalidator.IsUUID(v) {
+			return fmt.Errorf("category ID %s is not a valid UUID", v)
+		}
 	}
 	return nil
 }
